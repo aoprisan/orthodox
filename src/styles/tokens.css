@@ -1,0 +1,89 @@
+:root {
+  /* Byzantine palette */
+  --gold-leaf: #c9a227;
+  --gold-bright: #e8c552;
+  --gold-deep: #8a6d1a;
+  --gold-pale: #d8b94f;
+
+  --porphyry: #6e1f2c;
+  --porphyry-dark: #4a131c;
+  --crimson: #8c1c13;
+  --lapis: #1f3c88;
+  --lapis-dark: #142554;
+
+  --parchment: #f3e7c9;
+  --parchment-warm: #ecdcb0;
+  --ivory: #fbf6e6;
+  --ink: #2a1810;
+  --ink-soft: #4a3320;
+
+  /* Fast levels */
+  --fast-strict: #4a131c;
+  --fast-wine-oil: #8c1c13;
+  --fast-fish: #1f3c88;
+  --fast-dairy: #8a6d1a;
+  --fast-free: #2f6b3d;
+
+  /* Type */
+  --font-display: 'Cinzel', 'Cardo', 'Times New Roman', serif;
+  --font-body: 'Cormorant Garamond', 'Cardo', Georgia, serif;
+  --font-accent: 'Cardo', 'Cormorant Garamond', serif;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+
+  --radius: 4px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--porphyry-dark);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+body {
+  background:
+    radial-gradient(circle at 20% 10%, rgba(201, 162, 39, 0.08), transparent 50%),
+    radial-gradient(circle at 80% 90%, rgba(31, 60, 136, 0.08), transparent 50%),
+    var(--porphyry-dark);
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+a {
+  color: var(--gold-deep);
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin: 0;
+}
