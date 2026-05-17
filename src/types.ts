@@ -2,18 +2,20 @@ export type CalendarKind = 'new' | 'old';
 
 export type Lang = 'en' | 'ro';
 
+export type Localized = string | { en: string; ro?: string };
+
 export type FeastRank = 'great' | 'major' | 'minor';
 
 export interface Feast {
-  name: string;
+  name: Localized;
   rank: FeastRank;
-  note?: string;
+  note?: Localized;
 }
 
 export interface Saint {
-  name: string;
-  title?: string;
-  note?: string;
+  name: Localized;
+  title?: Localized;
+  note?: Localized;
 }
 
 export interface DayEntry {

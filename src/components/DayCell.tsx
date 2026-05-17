@@ -1,7 +1,7 @@
 import type { CalendarKind, FastInfo, Feast, Lang } from '../types';
 import { entryForDate, highestRank } from '../lib/feasts';
 import { fastFor } from '../lib/fasting';
-import { translateName } from '../i18n/names';
+import { loc } from '../i18n/loc';
 
 interface Props {
   date: Date;
@@ -34,7 +34,7 @@ export function DayCell({ date, inMonth, isToday, isSelected, kind, lang, onSele
   const fast: FastInfo = fastFor(date, kind);
   const rank = highestRank(entry.feasts);
   const top = topFeast(entry.feasts);
-  const label = top ? translateName(top.name, lang) : '';
+  const label = top ? loc(top.name, lang) : '';
 
   return (
     <button

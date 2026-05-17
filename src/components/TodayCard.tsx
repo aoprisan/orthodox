@@ -2,7 +2,7 @@ import type { CalendarKind, Feast, Lang } from '../types';
 import { entryForDate, highestRank } from '../lib/feasts';
 import { fastFor } from '../lib/fasting';
 import { locale, t, tFastLevel, tFastReason } from '../i18n/strings';
-import { translateName } from '../i18n/names';
+import { loc } from '../i18n/loc';
 
 interface Props {
   today: Date;
@@ -63,14 +63,14 @@ export function TodayCard({ today, kind, lang, onJump }: Props) {
         {top ? (
           <div className="today-card__feast">
             <span className="feast-mark" aria-hidden="true">✚ </span>
-            {translateName(top.name, lang)}
+            {loc(top.name, lang)}
           </div>
         ) : null}
         {entry.saints.length > 0 ? (
           <div className="today-card__saints">
             {entry.saints
               .slice(0, 3)
-              .map((s) => translateName(s.name, lang))
+              .map((s) => loc(s.name, lang))
               .join(' · ')}
           </div>
         ) : null}

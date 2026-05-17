@@ -3,7 +3,7 @@ import { entryForDate } from '../lib/feasts';
 import { fastFor } from '../lib/fasting';
 import { gregorianToJulian } from '../lib/julian';
 import { locale, t, tFastLevel, tFastReason, tRank } from '../i18n/strings';
-import { translateName } from '../i18n/names';
+import { loc } from '../i18n/loc';
 
 interface Props {
   date: Date;
@@ -55,11 +55,12 @@ export function DayDetail({ date, kind, lang }: Props) {
           <p className="empty">{t('noFeast', lang)}</p>
         ) : (
           <ul className="feast-list">
-            {sortedFeasts.map((f) => (
-              <li key={f.name} className="feast-item" data-rank={f.rank}>
+            {sortedFeasts.map((f, i) => (
+              <li key={i} className="feast-item" data-rank={f.rank}>
                 <span className="feast-item__rank">{tRank(f.rank, lang)}</span>
                 <span className="feast-mark" aria-hidden="true">✚ </span>
-                {translateName(f.name, lang)}
+                {loc(f.name, lang)}
+                {f.note ? <span className="feast-item__note">{loc(f.note, lang)}</span> : null}
               </li>
             ))}
           </ul>
@@ -72,10 +73,11 @@ export function DayDetail({ date, kind, lang }: Props) {
           <p className="empty">{t('noSaints', lang)}</p>
         ) : (
           <ul className="saint-list">
-            {entry.saints.map((s) => (
-              <li key={s.name} className="saint-item dropcap">
-                <span className="saint-item__name">{translateName(s.name, lang)}</span>
-                {s.title ? <span className="saint-item__title">{s.title}</span> : null}
+            {entry.saints.map((s, i) => (
+              <li key={i} className="saint-item dropcap">
+                <span className="saint-item__name">{loc(s.name, lang)}</span>
+                {s.title ? <span className="saint-item__title">{loc(s.title, lang)}</span> : null}
+                {s.note ? <span className="saint-item__note">{loc(s.note, lang)}</span> : null}
               </li>
             ))}
           </ul>
