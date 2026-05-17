@@ -538,3 +538,159 @@
   color: var(--gold-pale);
   border-bottom: 1px dotted var(--gold-deep);
 }
+
+/* ── Mobile tightening ─────────────────────────────────────────── */
+@media (max-width: 700px) {
+  .app {
+    padding: var(--space-3) var(--space-2) var(--space-8);
+  }
+
+  .header {
+    padding: var(--space-3) var(--space-2) var(--space-2);
+    gap: var(--space-2);
+  }
+  .header__title {
+    font-size: clamp(1.4rem, 6vw, 1.9rem);
+  }
+  .header__subtitle {
+    font-size: 0.82rem;
+  }
+  .header__controls {
+    gap: var(--space-2);
+  }
+  .month-nav {
+    padding: var(--space-1) var(--space-2);
+    gap: var(--space-1);
+  }
+  .month-nav__label {
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    min-width: 9ch;
+  }
+  .today-btn,
+  .calendar-toggle button,
+  .lang-selector button {
+    padding: var(--space-1) var(--space-3);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+  }
+  .lang-selector button {
+    min-width: 2rem;
+  }
+  .icon-btn {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  /* Slimmer meander border insets so the grid keeps more vertical room */
+  .meander-border::before,
+  .meander-border::after {
+    height: 12px;
+    background-size: 40px 12px;
+  }
+  .meander-border::before { top: 2px; }
+  .meander-border::after  { bottom: 2px; }
+
+  .month {
+    padding: var(--space-4) var(--space-2) var(--space-2);
+  }
+  .month__weekday {
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    padding: var(--space-1) 0;
+  }
+  .month__grid {
+    grid-auto-rows: minmax(58px, auto);
+  }
+
+  .day {
+    padding: 3px 4px;
+    min-height: 58px;
+  }
+  .day__num {
+    font-size: 0.85rem;
+  }
+  .day__feast {
+    font-size: 0.6rem;
+    line-height: 1.05;
+    -webkit-line-clamp: 2;
+  }
+  .day__fastdot {
+    width: 6px;
+    height: 6px;
+    top: 4px;
+    left: 4px;
+  }
+  .day[data-rank='great'] .day__num {
+    width: 1.5em;
+    height: 1.5em;
+    font-size: 0.72rem;
+    box-shadow: 0 0 0 1.5px var(--gold-leaf), 0 0 6px rgba(201, 162, 39, 0.55);
+  }
+
+  /* Today card: tighter ribbon, no inset wreath that eats space */
+  .today-card {
+    margin: var(--space-2) auto var(--space-4);
+    box-shadow:
+      inset 0 0 0 3px var(--parchment),
+      inset 0 0 0 4px var(--gold-pale),
+      0 3px 14px rgba(0, 0, 0, 0.25);
+  }
+  .today-card__ribbon {
+    padding: var(--space-1) var(--space-3);
+  }
+  .today-card__label {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+  }
+  .today-card__body {
+    padding: var(--space-3) var(--space-4);
+    gap: var(--space-1);
+  }
+  .today-card__date {
+    font-size: 0.95rem;
+  }
+  .today-card__feast {
+    font-size: 0.95rem;
+  }
+  .today-card__reason,
+  .today-card__saints {
+    font-size: 0.85rem;
+  }
+
+  /* Day-detail panel: shrink the arch top so it doesn't dominate */
+  .detail.arch {
+    border-radius: 80px 80px var(--radius) var(--radius);
+    padding: var(--space-8) var(--space-4) var(--space-4);
+    box-shadow:
+      inset 0 0 0 3px var(--parchment),
+      inset 0 0 0 4px var(--gold-pale),
+      0 4px 18px rgba(0, 0, 0, 0.3);
+  }
+  .detail__date {
+    font-size: 1.1rem;
+  }
+  .detail__weekday {
+    font-size: 0.85rem;
+  }
+  .saint-item {
+    font-size: 0.98rem;
+  }
+
+  .legend {
+    gap: var(--space-2);
+    font-size: 0.7rem;
+    margin-top: var(--space-3);
+  }
+
+  .footer {
+    margin-top: var(--space-6);
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .day__feast { display: none; }
+  .month__grid { grid-auto-rows: minmax(48px, auto); }
+  .day { min-height: 48px; }
+}
