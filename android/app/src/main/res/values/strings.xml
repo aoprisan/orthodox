@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Orthodox Calendar</string>
+    <string name="title_activity_main">Orthodox Calendar</string>
+    <string name="package_name">org.orthodox.calendar</string>
+    <string name="custom_url_scheme">org.orthodox.calendar</string>
+</resources>
