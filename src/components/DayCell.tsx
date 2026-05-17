@@ -11,6 +11,7 @@ interface Props {
   kind: CalendarKind;
   lang: Lang;
   onSelect: (date: Date) => void;
+  index?: number;
 }
 
 function topFeast(feasts: Feast[]): Feast | undefined {
@@ -29,7 +30,16 @@ function rankWeight(rank: Feast['rank']): number {
   }
 }
 
-export function DayCell({ date, inMonth, isToday, isSelected, kind, lang, onSelect }: Props) {
+export function DayCell({
+  date,
+  inMonth,
+  isToday,
+  isSelected,
+  kind,
+  lang,
+  onSelect,
+  index = 0,
+}: Props) {
   const entry = entryForDate(date, kind);
   const fast: FastInfo = fastFor(date, kind);
   const rank = highestRank(entry.feasts);
@@ -44,6 +54,8 @@ export function DayCell({ date, inMonth, isToday, isSelected, kind, lang, onSele
       data-today={isToday}
       data-selected={isSelected}
       data-rank={rank ?? undefined}
+      data-dow={date.getUTCDay()}
+      style={{ ['--i' as string]: index }}
       onClick={() => onSelect(date)}
       aria-label={`${date.toLocaleDateString(undefined, { dateStyle: 'full' })}${label ? ' — ' + label : ''}`}
     >

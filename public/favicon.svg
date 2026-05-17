@@ -1,15 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#e8c552" />
-      <stop offset="100%" stop-color="#8a6d1a" />
+      <stop offset="0%" stop-color="#f6e198" />
+      <stop offset="55%" stop-color="#c9a227" />
+      <stop offset="100%" stop-color="#5a4710" />
     </linearGradient>
+    <radialGradient id="bg" cx="0.5" cy="0.35" r="0.7">
+      <stop offset="0%" stop-color="#8a2538" />
+      <stop offset="100%" stop-color="#3a0f17" />
+    </radialGradient>
   </defs>
-  <rect width="64" height="64" rx="10" fill="#6e1f2c" />
-  <g fill="url(#g)" stroke="#8a6d1a" stroke-width="1.2">
-    <rect x="29" y="10" width="6" height="44" />
-    <rect x="20" y="20" width="24" height="5" />
-    <rect x="14" y="32" width="36" height="5" />
-    <polygon points="20,46 32,42 44,46 32,52" />
+  <rect width="64" height="64" rx="12" fill="url(#bg)" />
+  <circle cx="32" cy="32" r="22" fill="none" stroke="#c9a227" stroke-width="0.8" opacity="0.7" />
+  <g transform="translate(32 32)">
+    <path
+      d="M0 -22 L5 -14 L12 -19 L6 -10 L19 -10 L19 -5 L13 0 L19 5 L19 10 L6 10 L12 19 L5 14 L0 22 L-5 14 L-12 19 L-6 10 L-19 10 L-19 5 L-13 0 L-19 -5 L-19 -10 L-6 -10 L-12 -19 L-5 -14 Z"
+      fill="url(#g)"
+      stroke="#5a4710"
+      stroke-width="0.8"
+      stroke-linejoin="round"
+    />
+    <circle r="3" fill="#6e1f2c" />
   </g>
 </svg>

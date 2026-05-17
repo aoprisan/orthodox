@@ -1,20 +1,50 @@
-/* ── Decorative Byzantine elements ─────────────────────────────────── */
+/* ── BYZANTINE ORNAMENT KIT ─────────────────────────────────────────
+   Everything below is decorative scaffolding. Components reach for
+   these utility classes when they need an iconographic flourish:
+   parchment, meander-border, dropcap, arch, fast-pill, halo, etc. */
 
-/* Parchment background with subtle SVG noise */
+/* ── Parchment: vellum surface with foxing and pin-pricks ─────────── */
 .parchment {
   background-color: var(--parchment);
   background-image:
-    radial-gradient(circle at 30% 20%, rgba(138, 109, 26, 0.06), transparent 40%),
-    radial-gradient(circle at 70% 80%, rgba(110, 31, 44, 0.05), transparent 45%),
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0.30  0 0 0 0 0.22  0 0 0 0 0.08  0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  background-size: auto, auto, 240px 240px;
+    /* Foxing — age-mottling of old vellum */
+    radial-gradient(circle at 12% 18%, rgba(160, 100, 30, 0.07), transparent 22%),
+    radial-gradient(circle at 84% 14%, rgba(110, 31, 44, 0.06), transparent 26%),
+    radial-gradient(circle at 30% 88%, rgba(138, 109, 26, 0.08), transparent 24%),
+    radial-gradient(circle at 78% 82%, rgba(74, 19, 28, 0.05), transparent 28%),
+    /* Long-grain warmth */
+    linear-gradient(
+      170deg,
+      rgba(255, 240, 200, 0.5) 0%,
+      transparent 30%,
+      transparent 70%,
+      rgba(140, 105, 50, 0.12) 100%
+    ),
+    /* Velvety noise */
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0.30  0 0 0 0 0.22  0 0 0 0 0.08  0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: auto, auto, auto, auto, auto, 260px 260px;
+  position: relative;
 }
 
-/* Greek-key (meander) border using repeating SVG */
+/* Vellum edge highlight — barely-perceptible warmth around panels. */
+.parchment::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 200, 0.55),
+    inset 0 -1px 0 rgba(120, 80, 30, 0.18);
+}
+
+/* ── Meander (Greek key) border ──────────────────────────────────── */
 .meander-border {
   position: relative;
-  border: 2px solid var(--gold-deep);
+  border: 1px solid var(--gold-deep);
   background-color: var(--parchment);
+  box-shadow:
+    var(--shadow-vellum),
+    0 0 0 1px rgba(232, 197, 82, 0.18);
 }
 
 .meander-border::before,
@@ -24,111 +54,283 @@
   left: 0;
   right: 0;
   height: 18px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 18' width='60' height='18'><g fill='none' stroke='%238a6d1a' stroke-width='1.6'><path d='M0 14 L0 4 L10 4 L10 10 L4 10 L4 7 L7 7'/><path d='M14 14 L14 4 L24 4 L24 10 L18 10 L18 7 L21 7'/><path d='M28 14 L28 4 L38 4 L38 10 L32 10 L32 7 L35 7'/><path d='M42 14 L42 4 L52 4 L52 10 L46 10 L46 7 L49 7'/></g></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 18' width='60' height='18'><g fill='none' stroke='%238a6d1a' stroke-width='1.6' stroke-linecap='square'><path d='M0 14 L0 4 L10 4 L10 10 L4 10 L4 7 L7 7'/><path d='M14 14 L14 4 L24 4 L24 10 L18 10 L18 7 L21 7'/><path d='M28 14 L28 4 L38 4 L38 10 L32 10 L32 7 L35 7'/><path d='M42 14 L42 4 L52 4 L52 10 L46 10 L46 7 L49 7'/></g></svg>");
   background-repeat: repeat-x;
   background-size: 60px 18px;
   pointer-events: none;
+  opacity: 0.85;
 }
 
-.meander-border::before {
-  top: 4px;
-}
-.meander-border::after {
-  bottom: 4px;
-  transform: scaleY(-1);
-}
+.meander-border::before { top: 4px; }
+.meander-border::after  { bottom: 4px; transform: scaleY(-1); }
 
-/* Decorative dropped initial (illuminated capital) */
+/* ── Illuminated dropped initial ──────────────────────────────────
+   The first letter of the first principal saint gets vermilion ink
+   shadowed by gold leaf — the classical rubricated capital. */
 .dropcap::first-letter {
-  font-family: var(--font-display);
-  font-size: 2.6em;
-  line-height: 0.9;
-  float: left;
-  padding: 0.05em 0.12em 0 0;
-  color: var(--porphyry);
-  text-shadow: 1px 1px 0 var(--gold-pale);
+  font-family: var(--font-decorative);
   font-weight: 700;
+  font-size: 3em;
+  line-height: 0.85;
+  float: left;
+  padding: 0.08em 0.14em 0 0;
+  color: var(--porphyry);
+  text-shadow:
+    1px 1px 0 var(--gold-pale),
+    2px 2px 0 var(--gold-deep),
+    3px 3px 6px rgba(74, 19, 28, 0.25);
 }
 
-/* Gold cross marker for feast days */
+/* ── Feast-mark cross — small inline cross with a gold tremor ─── */
 .feast-mark {
   display: inline-block;
   color: var(--gold-deep);
   font-weight: 700;
-  text-shadow: 0 0 1px var(--gold-bright);
+  text-shadow: 0 0 1px var(--gold-bright), 0 0 4px rgba(232, 197, 82, 0.4);
   font-family: var(--font-display);
+  transform: translateY(-0.05em);
 }
 
-/* Halo behind a date number for Great Feasts */
+/* ── Vigil-lamp halo: pulses gently like an oil lamp before an icon
+   This is the heart of the design — the today indicator. */
 .halo {
   position: relative;
 }
 .halo::before {
   content: '';
   position: absolute;
-  inset: -6px;
+  inset: -8px;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--gold-bright) 0%, var(--gold-leaf) 45%, transparent 70%);
-  opacity: 0.7;
+  background:
+    radial-gradient(
+      circle,
+      var(--gold-highlight) 0%,
+      var(--gold-bright) 30%,
+      rgba(201, 162, 39, 0.65) 55%,
+      transparent 75%
+    );
+  opacity: 0.85;
   z-index: 0;
+  animation: lamp-pulse 3.2s var(--ease-in-out-sine) infinite;
+  filter: blur(0.3px);
 }
-.halo > * {
-  position: relative;
-  z-index: 1;
+.halo > * { position: relative; z-index: 1; }
+
+@keyframes lamp-pulse {
+  0%, 100% { opacity: 0.78; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.06); }
 }
 
-/* Gilded arch frame for panels */
+/* ── Arch: a tympanum-topped panel, framed in gold ──────────────── */
 .arch {
   position: relative;
   background: var(--ivory);
   border: 1px solid var(--gold-deep);
-  border-radius: 200px 200px var(--radius) var(--radius);
+  border-radius: var(--radius-arch) var(--radius-arch) var(--radius) var(--radius);
   padding: var(--space-12) var(--space-6) var(--space-6);
   box-shadow:
     inset 0 0 0 4px var(--parchment),
     inset 0 0 0 5px var(--gold-pale),
-    0 6px 30px rgba(0, 0, 0, 0.35);
-}
-.arch::before {
-  content: '✚';
-  position: absolute;
-  top: var(--space-3);
-  left: 50%;
-  transform: translateX(-50%);
-  color: var(--gold-deep);
-  font-size: 1.4rem;
+    inset 0 0 60px rgba(138, 109, 26, 0.12),
+    var(--shadow-altar);
 }
 
-/* Fast-level pill */
+/* Apex cross pattée — Byzantine cross with flared arm-ends */
+.arch::before {
+  content: '';
+  position: absolute;
+  top: var(--space-2);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 36px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><defs><linearGradient id='gp' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23f6e198'/><stop offset='1' stop-color='%238a6d1a'/></linearGradient></defs><path d='M18 4 L21 11 L24 8 L21 14 L28 14 L28 17 L25 19 L31 22 L24 22 L24 28 L21 25 L18 32 L15 25 L12 28 L12 22 L5 22 L11 19 L8 17 L8 14 L15 14 L12 8 L15 11 Z' fill='url(%23gp)' stroke='%235a4710' stroke-width='0.7' stroke-linejoin='round'/><circle cx='18' cy='18' r='2.2' fill='%236e1f2c'/></svg>");
+  background-repeat: no-repeat;
+  background-size: contain;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.3));
+}
+
+/* ── Cross-pattée section divider — the rubricated heading rule ── */
+.ornament-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  font-family: var(--font-decorative);
+  font-weight: 400;
+  font-size: 0.72rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin: var(--space-2) 0 var(--space-3);
+  text-align: center;
+  text-indent: 0.32em; /* compensate trailing letter-spacing */
+}
+
+.ornament-divider::before,
+.ornament-divider::after {
+  content: '';
+  flex: 1;
+  height: 12px;
+  max-width: 88px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 88 12'><g fill='none' stroke='%238a6d1a' stroke-width='1' stroke-linecap='round'><path d='M0 6 L78 6'/><circle cx='4' cy='6' r='1.4' fill='%238a6d1a'/><path d='M80 2 L82 6 L80 10 M84 2 L86 6 L84 10' /></g></svg>");
+  background-repeat: no-repeat;
+  background-size: 100% 12px;
+}
+
+.ornament-divider::after { transform: scaleX(-1); }
+
+.ornament-divider__mark {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--gold-leaf);
+  text-shadow: 0 0 6px rgba(232, 197, 82, 0.6);
+  line-height: 1;
+  letter-spacing: 0;
+  text-indent: 0;
+}
+
+/* ── Cloisonné fast-level pill ────────────────────────────────────
+   Enameled medallion with gold cell-walls. The hover ring mimics a
+   bezel catching candlelight. */
 .fast-pill {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-1) var(--space-3);
   border-radius: 999px;
-  border: 1px solid currentColor;
+  border: 1px solid var(--gold-deep);
   font-family: var(--font-display);
   font-size: 0.72rem;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.55),
+    transparent 60%
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(138, 109, 26, 0.45),
+    0 1px 2px rgba(0, 0, 0, 0.12);
+  transition: transform var(--dur-fast) var(--ease-out-quint);
 }
-.fast-pill[data-level='strict'] {
-  color: var(--fast-strict);
-  background: rgba(74, 19, 28, 0.08);
+.fast-pill::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.2),
+    0 0 4px currentColor;
+  flex: none;
 }
-.fast-pill[data-level='wine-oil'] {
-  color: var(--fast-wine-oil);
-  background: rgba(140, 28, 19, 0.08);
+.fast-pill[data-level='strict']    { color: var(--fast-strict);    background-color: rgba(74, 19, 28, 0.16); }
+.fast-pill[data-level='wine-oil']  { color: var(--fast-wine-oil);  background-color: rgba(140, 28, 19, 0.14); }
+.fast-pill[data-level='fish']      { color: var(--fast-fish);      background-color: rgba(31, 60, 136, 0.14); }
+.fast-pill[data-level='dairy']     { color: var(--fast-dairy);     background-color: rgba(138, 109, 26, 0.16); }
+.fast-pill[data-level='fast-free'] { color: var(--fast-free);      background-color: rgba(47, 107, 61, 0.14); }
+
+/* ── Chrysography: gold striations on the title ──────────────────
+   The main title gets layered text-shadows that simulate the
+   highlight-rays Byzantine icon painters drew over Christ's robes. */
+.chrysography {
+  background: linear-gradient(
+    180deg,
+    var(--gold-highlight) 0%,
+    var(--gold-bright) 40%,
+    var(--gold-leaf) 70%,
+    var(--gold-deep) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter:
+    drop-shadow(0 1px 0 rgba(0, 0, 0, 0.5))
+    drop-shadow(0 0 8px rgba(232, 197, 82, 0.35));
+  position: relative;
 }
-.fast-pill[data-level='fish'] {
-  color: var(--fast-fish);
-  background: rgba(31, 60, 136, 0.08);
+
+/* Striation rays overlaid via repeating linear-gradient with mix-blend */
+.chrysography::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    105deg,
+    transparent 0,
+    transparent 6px,
+    rgba(255, 255, 255, 0.18) 6px,
+    rgba(255, 255, 255, 0.18) 7px,
+    transparent 7px,
+    transparent 14px
+  );
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  mask: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.1));
+  -webkit-mask: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.1));
 }
-.fast-pill[data-level='dairy'] {
-  color: var(--fast-dairy);
-  background: rgba(138, 109, 26, 0.1);
+
+/* ── Tympanum: SVG arch above the header title with apex cross ─── */
+.tympanum {
+  display: block;
+  margin: 0 auto var(--space-2);
+  width: min(420px, 78vw);
+  height: 56px;
+  pointer-events: none;
 }
-.fast-pill[data-level='fast-free'] {
-  color: var(--fast-free);
-  background: rgba(47, 107, 61, 0.08);
+
+/* ── Page-load reveal: chrism cascade ────────────────────────────
+   On first paint, day cells fade and lift in with a staggered delay
+   like incense settling. Components opt in via .reveal. */
+.reveal {
+  opacity: 0;
+  transform: translateY(6px);
+  animation: vellum-rise var(--dur-slow) var(--ease-out-quint) forwards;
+}
+
+@keyframes vellum-rise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Each day cell can stagger by --i (set inline). */
+.stagger {
+  animation-delay: calc(var(--i, 0) * 14ms);
+}
+
+/* ── Shimmer: a thin highlight band sweeps across gold elements on
+   hover, like candlelight glancing off leaf gilding. */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 240, 180, 0.45) 50%,
+    transparent 70%
+  );
+  transform: translateX(-130%);
+  transition: transform 700ms var(--ease-out-quint);
+  pointer-events: none;
+  z-index: 0;
+}
+.shimmer:hover::after,
+.shimmer:focus-visible::after {
+  transform: translateX(130%);
+}
+.shimmer > * {
+  position: relative;
+  z-index: 1;
 }

@@ -47,7 +47,7 @@ export function MonthGrid({ year, month, selected, kind, lang, onSelect }: Props
         ))}
       </div>
       <div className="month__grid" role="grid">
-        {days.map((d) => (
+        {days.map((d, i) => (
           <DayCell
             key={d.toISOString()}
             date={d}
@@ -57,6 +57,7 @@ export function MonthGrid({ year, month, selected, kind, lang, onSelect }: Props
             kind={kind}
             lang={lang}
             onSelect={onSelect}
+            index={i}
           />
         ))}
       </div>

@@ -1,34 +1,91 @@
+/* ── Shell ──────────────────────────────────────────────────────── */
 .app {
-  max-width: 1180px;
+  position: relative;
+  z-index: 2; /* sit above the body grain overlay */
+  max-width: 1200px;
   margin: 0 auto;
-  padding: var(--space-6) var(--space-4) var(--space-12);
+  padding: var(--space-8) var(--space-4) var(--space-12);
   min-height: 100vh;
 }
 
 /* ── Header ─────────────────────────────────────────────────────── */
 .header {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  align-items: center;
+  gap: var(--space-3);
   padding: var(--space-6) var(--space-4) var(--space-4);
   color: var(--ivory);
   text-align: center;
 }
 
-.header__title {
-  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
-  color: var(--gold-bright);
-  text-shadow: 0 1px 0 var(--gold-deep), 0 2px 8px rgba(0, 0, 0, 0.6);
-  margin: 0;
+.header__tympanum {
+  display: block;
+  width: min(540px, 88vw);
+  height: 64px;
+  margin: 0 auto;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.55));
+  animation: vellum-rise var(--dur-slow) var(--ease-out-quint) backwards;
+  animation-delay: 60ms;
 }
 
+.header__title {
+  font-family: var(--font-decorative);
+  font-weight: 700;
+  font-size: clamp(1.9rem, 4vw, 2.9rem);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  margin: 0;
+  padding: 0 var(--space-3);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+  animation: vellum-rise var(--dur-slow) var(--ease-out-quint) backwards;
+  animation-delay: 140ms;
+}
+
+.header__title-text {
+  background: linear-gradient(
+    180deg,
+    var(--gold-highlight) 0%,
+    var(--gold-bright) 40%,
+    var(--gold-leaf) 75%,
+    var(--gold-deep) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter:
+    drop-shadow(0 1px 0 rgba(0, 0, 0, 0.55))
+    drop-shadow(0 0 12px rgba(232, 197, 82, 0.32));
+}
+
+/* Flanking acanthus flourishes on either side of the title */
+.header__title::before,
+.header__title::after {
+  content: '';
+  display: block;
+  width: 38px;
+  height: 18px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 18'><g fill='none' stroke='%23c9a227' stroke-width='1.2' stroke-linecap='round'><path d='M0 9 C 10 9, 14 4, 22 9 S 34 9, 38 9'/><circle cx='2' cy='9' r='1.4' fill='%23c9a227'/><path d='M30 9 c 0 -3, 3 -5, 6 -2 M30 9 c 0 3, 3 5, 6 2' /></g></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.header__title::after { transform: scaleX(-1); }
+
 .header__subtitle {
-  font-family: var(--font-accent);
-  font-style: italic;
+  font-family: var(--font-flourish);
+  font-size: clamp(1rem, 2vw, 1.25rem);
   color: var(--parchment-warm);
-  letter-spacing: 0.08em;
-  font-size: 0.95rem;
-  margin-top: -0.25rem;
+  letter-spacing: 0.04em;
+  font-weight: 400;
+  margin-top: -0.1rem;
+  opacity: 0.92;
+  animation: vellum-rise var(--dur-slow) var(--ease-out-quint) backwards;
+  animation-delay: 220ms;
 }
 
 .header__controls {
@@ -36,130 +93,172 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: var(--space-4);
-  margin-top: var(--space-2);
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  animation: vellum-rise var(--dur-slow) var(--ease-out-quint) backwards;
+  animation-delay: 300ms;
 }
 
+/* ── Month navigator ────────────────────────────────────────────── */
 .month-nav {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
   border: 1px solid var(--gold-deep);
-  border-radius: var(--radius);
-  background: rgba(243, 231, 201, 0.08);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 240, 200, 0.05), rgba(0, 0, 0, 0.15)),
+    rgba(110, 31, 44, 0.35);
   color: var(--parchment);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 200, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4);
 }
 
 .month-nav__label {
   font-family: var(--font-display);
-  font-size: 1.05rem;
-  letter-spacing: 0.12em;
+  font-size: 1rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  min-width: 11ch;
+  min-width: 12ch;
   text-align: center;
+  color: var(--gold-bright);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
 }
 
 .icon-btn {
-  width: 2rem;
-  height: 2rem;
+  width: 2.1rem;
+  height: 2.1rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: var(--gold-bright);
-  border-radius: var(--radius);
-  transition: background 120ms ease;
+  border-radius: 999px;
+  transition: background var(--dur-fast) ease, transform var(--dur-fast) ease, color var(--dur-fast) ease;
 }
 .icon-btn:hover {
-  background: rgba(232, 197, 82, 0.12);
+  background: rgba(232, 197, 82, 0.16);
+  color: var(--gold-highlight);
 }
+.icon-btn:active { transform: scale(0.92); }
 .icon-btn:focus-visible {
   outline: 2px solid var(--gold-bright);
   outline-offset: 2px;
 }
 
-/* ── Calendar toggle ────────────────────────────────────────────── */
-.calendar-toggle {
-  display: inline-flex;
-  border: 1px solid var(--gold-deep);
-  border-radius: 999px;
-  overflow: hidden;
-  background: rgba(243, 231, 201, 0.08);
-}
-.calendar-toggle button {
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: var(--space-2) var(--space-4);
-  color: var(--parchment-warm);
-  transition: background 120ms ease, color 120ms ease;
-}
-.calendar-toggle button[aria-pressed='true'] {
-  background: var(--gold-leaf);
-  color: var(--porphyry-dark);
-}
-
-.today-btn {
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: var(--space-2) var(--space-4);
-  border: 1px solid var(--gold-deep);
-  border-radius: var(--radius);
-  color: var(--parchment);
-  background: rgba(243, 231, 201, 0.05);
-}
-.today-btn:hover {
-  background: rgba(232, 197, 82, 0.12);
-}
-
-/* ── Language selector ─────────────────────────────────────────── */
+/* ── Calendar toggle: two-state segmented control with gilded pill */
+.calendar-toggle,
 .lang-selector {
   display: inline-flex;
   border: 1px solid var(--gold-deep);
   border-radius: 999px;
   overflow: hidden;
-  background: rgba(243, 231, 201, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 240, 200, 0.04), rgba(0, 0, 0, 0.18)),
+    rgba(110, 31, 44, 0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 200, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4);
 }
+.calendar-toggle button,
 .lang-selector button {
   font-family: var(--font-display);
   font-size: 0.72rem;
-  letter-spacing: 0.18em;
-  padding: var(--space-2) var(--space-3);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: var(--space-2) var(--space-4);
   color: var(--parchment-warm);
-  min-width: 2.5rem;
-  transition: background 120ms ease, color 120ms ease;
+  transition: background var(--dur-fast) ease, color var(--dur-fast) ease;
+  position: relative;
 }
+.calendar-toggle button:hover,
+.lang-selector button:hover {
+  color: var(--gold-highlight);
+}
+.calendar-toggle button[aria-pressed='true'],
 .lang-selector button[aria-pressed='true'] {
-  background: var(--gold-leaf);
+  background:
+    radial-gradient(circle at 30% 30%, var(--gold-highlight), var(--gold-leaf) 70%);
   color: var(--porphyry-dark);
+  text-shadow: 0 1px 0 rgba(255, 240, 200, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(90, 71, 16, 0.6);
 }
 
-/* ── Today card ────────────────────────────────────────────────── */
+.lang-selector button {
+  letter-spacing: 0.2em;
+  padding: var(--space-2) var(--space-3);
+  min-width: 2.6rem;
+}
+
+.today-btn {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--gold-deep);
+  border-radius: 999px;
+  color: var(--parchment);
+  background:
+    linear-gradient(180deg, rgba(255, 240, 200, 0.05), rgba(0, 0, 0, 0.18)),
+    rgba(110, 31, 44, 0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 200, 0.12),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+  transition: color var(--dur-fast) ease, background var(--dur-fast) ease, transform var(--dur-fast) ease;
+}
+.today-btn:hover {
+  color: var(--gold-highlight);
+  background:
+    linear-gradient(180deg, rgba(232, 197, 82, 0.15), rgba(0, 0, 0, 0.1)),
+    rgba(110, 31, 44, 0.4);
+}
+.today-btn:active { transform: scale(0.97); }
+
+/* ── Today card: a small codex opened on a lectern ──────────────── */
 .today-card {
   position: relative;
-  margin: var(--space-2) auto var(--space-6);
-  max-width: 100%;
+  margin: var(--space-4) auto var(--space-6);
   display: flex;
   align-items: stretch;
-  background: linear-gradient(
-    135deg,
-    var(--ivory) 0%,
-    var(--parchment) 100%
-  );
+  background:
+    linear-gradient(135deg, var(--ivory) 0%, var(--parchment) 100%);
   border: 1px solid var(--gold-deep);
   border-radius: var(--radius);
   box-shadow:
     inset 0 0 0 4px var(--parchment),
     inset 0 0 0 5px var(--gold-pale),
-    0 4px 20px rgba(0, 0, 0, 0.3);
+    inset 0 0 80px rgba(138, 109, 26, 0.1),
+    var(--shadow-altar);
   overflow: hidden;
+  animation: vellum-rise var(--dur-slow) var(--ease-out-quint) backwards;
+  animation-delay: 380ms;
+}
+
+/* Center-fold shadow — a closed book's binding catching shadow */
+.today-card::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: 110px;
+  width: 1px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(110, 80, 30, 0.35) 20%,
+    rgba(110, 80, 30, 0.35) 80%,
+    transparent
+  );
+  pointer-events: none;
 }
 
 .today-card__ribbon {
-  background: var(--porphyry);
+  background:
+    linear-gradient(180deg, var(--porphyry) 0%, var(--porphyry-dark) 100%);
   color: var(--gold-bright);
   display: flex;
   align-items: center;
@@ -167,6 +266,18 @@
   padding: 0 var(--space-4);
   min-width: 110px;
   position: relative;
+  /* Tasseled bookmark notch at the bottom */
+}
+.today-card__ribbon::before {
+  /* Inset gold rule echoing the binding */
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 6px;
+  right: 6px;
+  border: 1px solid rgba(232, 197, 82, 0.55);
+  pointer-events: none;
 }
 .today-card__ribbon::after {
   content: '';
@@ -175,14 +286,15 @@
   bottom: 0;
   right: -1px;
   width: 2px;
-  background: var(--gold-leaf);
+  background: linear-gradient(180deg, var(--gold-pale), var(--gold-deep), var(--gold-pale));
 }
+
 .today-card__label {
   font-family: var(--font-display);
-  letter-spacing: 0.22em;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
-  font-size: 0.85rem;
-  text-shadow: 0 1px 0 var(--porphyry-dark);
+  font-size: 0.82rem;
+  text-shadow: 0 1px 0 var(--porphyry-night);
   writing-mode: horizontal-tb;
 }
 
@@ -192,23 +304,23 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  min-width: 0;
 }
 
 .today-card__date {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   color: var(--porphyry);
   text-align: left;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
   padding: 0;
   border-bottom: 1px dotted var(--gold-deep);
   align-self: flex-start;
   cursor: pointer;
   background: transparent;
+  transition: color var(--dur-fast) ease;
 }
-.today-card__date:hover {
-  color: var(--crimson);
-}
+.today-card__date:hover { color: var(--crimson); }
 
 .today-card__pill {
   display: flex;
@@ -216,41 +328,43 @@
   gap: var(--space-3);
   flex-wrap: wrap;
 }
+
 .today-card__reason {
   font-family: var(--font-accent);
   font-style: italic;
   color: var(--ink-soft);
-  font-size: 0.95rem;
+  font-size: 0.98rem;
 }
 
 .today-card__feast {
   font-family: var(--font-accent);
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   color: var(--porphyry);
   font-weight: 600;
 }
 
+/* Great-feast variant: extra inset gold ring + porphyry stripe */
 .today-card[data-rank='great'] {
   background:
-    radial-gradient(circle at 90% 0%, rgba(232, 197, 82, 0.35), transparent 50%),
+    radial-gradient(circle at 90% 0%, rgba(232, 197, 82, 0.32), transparent 50%),
     linear-gradient(135deg, var(--ivory) 0%, var(--parchment-warm) 100%);
   box-shadow:
     inset 0 0 0 4px var(--parchment),
     inset 0 0 0 5px var(--porphyry),
     inset 0 0 0 7px var(--gold-leaf),
-    0 6px 26px rgba(110, 31, 44, 0.35);
+    inset 0 0 100px rgba(232, 197, 82, 0.18),
+    var(--shadow-altar);
 }
 
 .today-card__saints {
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--ink-soft);
 }
 
 @media (max-width: 640px) {
-  .today-card {
-    flex-direction: column;
-  }
+  .today-card { flex-direction: column; }
+  .today-card::after { display: none; }
   .today-card__ribbon {
     min-width: 0;
     padding: var(--space-2);
@@ -262,10 +376,11 @@
     right: 0;
     width: auto;
     height: 2px;
+    background: linear-gradient(90deg, var(--gold-pale), var(--gold-deep), var(--gold-pale));
   }
 }
 
-/* ── Main layout ────────────────────────────────────────────────── */
+/* ── Main layout grid ───────────────────────────────────────────── */
 .layout {
   display: grid;
   gap: var(--space-6);
@@ -282,6 +397,8 @@
 /* ── Month grid ─────────────────────────────────────────────────── */
 .month {
   padding: var(--space-6) var(--space-4) var(--space-4);
+  animation: vellum-rise var(--dur-slow) var(--ease-out-quint) backwards;
+  animation-delay: 460ms;
 }
 
 .month__weekdays {
@@ -290,25 +407,44 @@
   gap: 0;
   margin-bottom: var(--space-2);
 }
+
 .month__weekday {
   text-align: center;
   font-family: var(--font-display);
-  font-size: 0.72rem;
-  letter-spacing: 0.15em;
+  font-size: 0.74rem;
+  letter-spacing: 0.18em;
   color: var(--gold-deep);
   padding: var(--space-2) 0;
-  border-bottom: 1px solid rgba(138, 109, 26, 0.35);
+  border-bottom: 1px solid rgba(138, 109, 26, 0.5);
+  text-transform: uppercase;
+  position: relative;
+}
+
+/* Tiny gilt dot under each weekday header — typesetter's bullet */
+.month__weekday::after {
+  content: '·';
+  position: absolute;
+  bottom: -0.5em;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--gold-leaf);
+  font-size: 1.1rem;
+  line-height: 0;
 }
 
 .month__grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-auto-rows: minmax(70px, 1fr);
+  grid-auto-rows: minmax(72px, 1fr);
   gap: 1px;
-  background: rgba(138, 109, 26, 0.3);
-  border: 1px solid rgba(138, 109, 26, 0.5);
+  background: rgba(138, 109, 26, 0.45);
+  border: 1px solid rgba(138, 109, 26, 0.55);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 240, 200, 0.15),
+    inset 0 0 30px rgba(110, 31, 44, 0.08);
 }
 
+/* ── Day cell: a tessera in the calendar mosaic ─────────────────── */
 .day {
   position: relative;
   display: flex;
@@ -317,53 +453,133 @@
   background: var(--ivory);
   color: var(--ink);
   cursor: pointer;
-  transition: background 120ms ease, transform 120ms ease;
-  min-height: 70px;
+  transition:
+    background var(--dur-fast) ease,
+    transform var(--dur-fast) var(--ease-out-quint),
+    box-shadow var(--dur-fast) ease;
+  min-height: 72px;
+  /* Each cell rises in with a staggered delay */
+  opacity: 0;
+  animation: vellum-rise var(--dur-base) var(--ease-out-quint) forwards;
+  animation-delay: calc(540ms + var(--i, 0) * 12ms);
 }
+
 .day:hover {
   background: var(--parchment-warm);
+  z-index: 2;
+  box-shadow: 0 0 0 1px var(--gold-pale) inset;
 }
 .day:focus-visible {
   outline: 2px solid var(--gold-leaf);
   outline-offset: -2px;
 }
 .day[data-outside='true'] {
-  background: rgba(243, 231, 201, 0.55);
-  color: rgba(74, 51, 32, 0.5);
+  background: rgba(243, 231, 201, 0.5);
+  color: rgba(74, 51, 32, 0.45);
 }
 .day[data-selected='true'] {
-  background: var(--parchment-warm);
-  box-shadow: inset 0 0 0 2px var(--gold-leaf);
+  background:
+    radial-gradient(circle at 50% 40%, rgba(232, 197, 82, 0.25), transparent 65%),
+    var(--parchment-warm);
+  box-shadow:
+    inset 0 0 0 2px var(--gold-leaf),
+    inset 0 0 18px rgba(232, 197, 82, 0.35);
+  z-index: 2;
 }
-.day[data-today='true'] .day__num {
-  color: var(--porphyry);
+
+/* Sunday column gets a subtle rubric — the Lord's day tinted */
+.day[data-dow='0'] .day__num {
+  color: var(--vermilion);
+}
+.day[data-dow='0'][data-outside='true'] .day__num {
+  color: rgba(177, 50, 38, 0.4);
 }
 
 .day__num {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 1.02rem;
   font-weight: 600;
   align-self: flex-end;
+  position: relative;
+  line-height: 1.1;
+  padding: 0 0.05em;
 }
 
-.day[data-rank='great'] .day__num {
+/* Today: a vigil lamp burning. The lamp is the haloed numeral.
+   This is the design's signature — pulses gently, draws the eye. */
+.day[data-today='true'] .day__num {
   color: var(--ivory);
-  background: var(--porphyry);
-  width: 1.8em;
-  height: 1.8em;
+  background:
+    radial-gradient(circle at 50% 40%, var(--gold-highlight), var(--gold-leaf) 55%, var(--gold-deep) 100%);
+  width: 1.9em;
+  height: 1.9em;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 0 2px var(--gold-leaf), 0 0 8px rgba(201, 162, 39, 0.6);
+  text-shadow: 0 1px 0 rgba(74, 19, 28, 0.6);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 240, 200, 0.6),
+    0 0 0 1.5px var(--porphyry),
+    0 0 0 3px var(--gold-leaf),
+    0 0 18px rgba(232, 197, 82, 0.7);
+  animation: vigil-lamp 3.4s var(--ease-in-out-sine) infinite;
   align-self: flex-end;
+}
+
+@keyframes vigil-lamp {
+  0%, 100% {
+    box-shadow:
+      inset 0 1px 1px rgba(255, 240, 200, 0.6),
+      0 0 0 1.5px var(--porphyry),
+      0 0 0 3px var(--gold-leaf),
+      0 0 14px rgba(232, 197, 82, 0.55);
+  }
+  50% {
+    box-shadow:
+      inset 0 1px 1px rgba(255, 240, 200, 0.7),
+      0 0 0 1.5px var(--porphyry),
+      0 0 0 3px var(--gold-bright),
+      0 0 28px rgba(232, 197, 82, 0.95);
+  }
+}
+
+/* Great feast: porphyry medallion (no pulse — solemn permanence) */
+.day[data-rank='great'] .day__num {
+  color: var(--ivory);
+  background:
+    radial-gradient(circle at 50% 30%, var(--porphyry) 0%, var(--porphyry-dark) 100%);
+  width: 1.85em;
+  height: 1.85em;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 200, 0.25),
+    0 0 0 2px var(--gold-leaf),
+    0 0 10px rgba(201, 162, 39, 0.65);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* When the great-feast cell IS today, give it both rings + gentle pulse */
+.day[data-today='true'][data-rank='great'] .day__num {
+  background:
+    radial-gradient(circle at 50% 30%, var(--porphyry) 0%, var(--porphyry-dark) 100%);
+  color: var(--gold-bright);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 200, 0.3),
+    0 0 0 2px var(--gold-leaf),
+    0 0 0 3.5px var(--porphyry),
+    0 0 22px rgba(232, 197, 82, 0.8);
+  animation: vigil-lamp 3.4s var(--ease-in-out-sine) infinite;
 }
 
 .day__feast {
   margin-top: auto;
   font-family: var(--font-accent);
-  font-size: 0.72rem;
-  line-height: 1.15;
+  font-size: 0.74rem;
+  line-height: 1.18;
   color: var(--porphyry);
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -371,33 +587,42 @@
   overflow: hidden;
 }
 
+/* Fast dot — a cloisonné bead in the corner */
 .day__fastdot {
   position: absolute;
   top: var(--space-2);
   left: var(--space-2);
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+    0 0 0 0.5px rgba(138, 109, 26, 0.5);
 }
-.day__fastdot[data-level='strict'] { background: var(--fast-strict); }
-.day__fastdot[data-level='wine-oil'] { background: var(--fast-wine-oil); }
-.day__fastdot[data-level='fish'] { background: var(--fast-fish); }
-.day__fastdot[data-level='dairy'] { background: var(--fast-dairy); }
+.day__fastdot[data-level='strict']    { background: var(--fast-strict); }
+.day__fastdot[data-level='wine-oil']  { background: var(--fast-wine-oil); }
+.day__fastdot[data-level='fish']      { background: var(--fast-fish); }
+.day__fastdot[data-level='dairy']     { background: var(--fast-dairy); }
 .day__fastdot[data-level='fast-free'] { background: var(--fast-free); }
 
-/* ── Day detail panel ──────────────────────────────────────────── */
+/* ── Day detail panel (arch) ─────────────────────────────────────── */
 .detail {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  animation: vellum-rise var(--dur-slow) var(--ease-out-quint) backwards;
+  animation-delay: 600ms;
 }
 
 .detail__date {
   font-family: var(--font-display);
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   color: var(--porphyry);
   text-align: center;
   margin: 0;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
 }
 .detail__weekday {
   font-family: var(--font-accent);
@@ -405,31 +630,40 @@
   text-align: center;
   color: var(--ink-soft);
   margin: 0;
+  font-size: 0.95rem;
 }
 
 .detail__section + .detail__section {
   margin-top: var(--space-4);
 }
+
+/* Section headings now use the cross-pattée ornament-divider mixin */
 .detail__section-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
   font-family: var(--font-display);
   font-size: 0.78rem;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--gold-deep);
   text-align: center;
-  margin-bottom: var(--space-2);
-  position: relative;
+  margin: var(--space-2) 0 var(--space-3);
+  text-indent: 0.26em;
 }
 .detail__section-title::before,
 .detail__section-title::after {
   content: '';
-  display: inline-block;
-  width: 30px;
-  height: 1px;
-  background: var(--gold-deep);
-  vertical-align: middle;
-  margin: 0 var(--space-2);
+  flex: 1;
+  height: 10px;
+  max-width: 78px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 78 10'><g fill='%238a6d1a'><circle cx='2' cy='5' r='1.2'/><rect x='10' y='4.5' width='58' height='1' rx='0.5'/><path d='M70 5 L73 2 L73 8 Z M75 5 L78 2 L78 8 Z'/></g></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 10px;
 }
+.detail__section-title::after { transform: scaleX(-1); }
 
 .feast-list,
 .saint-list {
@@ -442,24 +676,29 @@
 }
 
 .feast-item {
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
   border-left: 3px solid var(--gold-leaf);
-  background: rgba(232, 197, 82, 0.1);
+  background:
+    linear-gradient(90deg, rgba(232, 197, 82, 0.18), rgba(232, 197, 82, 0.04) 60%, transparent);
   font-family: var(--font-accent);
-  font-size: 1rem;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  position: relative;
 }
 .feast-item[data-rank='great'] {
   border-left-color: var(--porphyry);
-  background: rgba(110, 31, 44, 0.08);
+  background:
+    linear-gradient(90deg, rgba(110, 31, 44, 0.16), rgba(110, 31, 44, 0.04) 60%, transparent);
   font-weight: 600;
 }
 .feast-item__rank {
   display: block;
   font-family: var(--font-display);
-  font-size: 0.65rem;
-  letter-spacing: 0.18em;
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--gold-deep);
+  margin-bottom: 2px;
 }
 .feast-item[data-rank='great'] .feast-item__rank {
   color: var(--porphyry);
@@ -467,16 +706,15 @@
 
 .saint-item {
   font-family: var(--font-body);
-  font-size: 1.05rem;
-  line-height: 1.35;
+  font-size: 1.08rem;
+  line-height: 1.4;
+  color: var(--ink);
 }
-.saint-item__name {
-  font-weight: 600;
-}
+.saint-item__name { font-weight: 600; }
 .saint-item__title {
   display: block;
   font-style: italic;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   color: var(--ink-soft);
 }
 
@@ -485,24 +723,21 @@
   display: block;
   margin-top: var(--space-1);
   font-family: var(--font-accent);
-  font-size: 0.88rem;
-  line-height: 1.35;
+  font-size: 0.9rem;
+  line-height: 1.4;
   color: var(--ink-soft);
 }
-.feast-item__note {
-  font-style: italic;
-}
+.feast-item__note { font-style: italic; }
 
 .saint-item--secondary {
-  font-size: 0.92rem;
+  font-size: 0.95rem;
   color: var(--ink-soft);
   border-left: 2px solid var(--gold-leaf);
   padding-left: var(--space-2);
   margin-left: var(--space-2);
+  opacity: 0.92;
 }
-.saint-item--secondary .saint-item__name {
-  font-weight: 500;
-}
+.saint-item--secondary .saint-item__name { font-weight: 500; }
 
 .detail__source {
   margin-top: var(--space-2);
@@ -514,34 +749,37 @@
   text-align: center;
 }
 
-/* ── Lives of the Saints (expandable) ─────────────────────────────── */
+/* ── Lives of the Saints (expandable) ───────────────────────────── */
 .lives {
-  border-top: 1px solid rgba(196, 156, 47, 0.25);
+  border-top: 1px dashed rgba(196, 156, 47, 0.35);
   padding-top: var(--space-3);
+  margin-top: var(--space-2);
 }
 .lives > summary {
   cursor: pointer;
   list-style: none;
   font-family: var(--font-display);
   font-size: 0.78rem;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--gold-deep);
   text-align: center;
   padding: var(--space-2) 0;
   outline: none;
+  transition: color var(--dur-fast) ease;
 }
-.lives > summary::-webkit-details-marker {
-  display: none;
-}
+.lives > summary:hover { color: var(--porphyry); }
+.lives > summary::-webkit-details-marker { display: none; }
 .lives > summary::before {
-  content: '▸ ';
+  content: '✚';
   display: inline-block;
-  transition: transform 160ms ease;
-  margin-right: 0.2em;
+  transition: transform var(--dur-base) var(--ease-out-quint);
+  margin-right: 0.4em;
+  color: var(--gold-leaf);
+  text-shadow: 0 0 4px rgba(232, 197, 82, 0.5);
 }
 .lives[open] > summary::before {
-  transform: rotate(90deg);
+  transform: rotate(45deg);
 }
 .lives__count {
   color: var(--ink-soft);
@@ -556,21 +794,17 @@
   font-style: italic;
   color: var(--ink-soft);
 }
-.lives__body {
-  margin-top: var(--space-3);
-}
+.lives__body { margin-top: var(--space-3); }
 .lives__lang-notice {
   font-family: var(--font-accent);
   font-style: italic;
   font-size: 0.82rem;
   text-align: center;
   color: var(--ink-soft);
-  opacity: 0.7;
+  opacity: 0.75;
   margin: 0 0 var(--space-3);
 }
-.lives__section + .lives__section {
-  margin-top: var(--space-5);
-}
+.lives__section + .lives__section { margin-top: var(--space-5); }
 .lives__section-title {
   font-family: var(--font-accent);
   font-style: italic;
@@ -584,12 +818,25 @@
 }
 .lives__paragraph {
   font-family: var(--font-body);
-  font-size: 1rem;
-  line-height: 1.65;
+  font-size: 1.04rem;
+  line-height: 1.68;
   color: var(--ink);
   text-align: justify;
   text-indent: 1.4em;
   margin: 0 0 var(--space-2);
+}
+/* First paragraph of each section gets an illuminated capital */
+.lives__section > .lives__paragraph:first-of-type::first-letter {
+  font-family: var(--font-decorative);
+  font-weight: 700;
+  font-size: 2.6em;
+  line-height: 0.85;
+  float: left;
+  padding: 0.06em 0.12em 0 0;
+  color: var(--porphyry);
+  text-shadow:
+    1px 1px 0 var(--gold-pale),
+    2px 2px 0 var(--gold-deep);
 }
 .lives__closing {
   font-family: var(--font-accent);
@@ -614,9 +861,7 @@
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
 }
-.lives__source a:hover {
-  color: var(--gold-deep);
-}
+.lives__source a:hover { color: var(--gold-deep); }
 
 .detail__fast {
   display: flex;
@@ -630,7 +875,7 @@
   font-family: var(--font-accent);
   font-style: italic;
   color: var(--ink-soft);
-  font-size: 0.95rem;
+  font-size: 0.98rem;
 }
 
 .empty {
@@ -640,69 +885,96 @@
   color: var(--ink-soft);
 }
 
-/* ── Legend ────────────────────────────────────────────────────── */
+/* ── Legend ─────────────────────────────────────────────────────── */
 .legend {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-3);
+  gap: var(--space-4);
   justify-content: center;
-  margin-top: var(--space-4);
+  margin-top: var(--space-6);
   color: var(--parchment-warm);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-family: var(--font-accent);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid rgba(232, 197, 82, 0.2);
+  border-bottom: 1px solid rgba(232, 197, 82, 0.2);
 }
 .legend__item {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+  letter-spacing: 0.04em;
 }
 .legend__swatch {
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
   border-radius: 50%;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+    0 0 0 0.5px rgba(232, 197, 82, 0.5);
 }
 
-/* ── Footer ────────────────────────────────────────────────────── */
+/* ── Footer (colophon) ──────────────────────────────────────────── */
 .footer {
-  margin-top: var(--space-12);
+  margin-top: var(--space-8);
   text-align: center;
   color: var(--parchment-warm);
   font-family: var(--font-accent);
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   font-style: italic;
   opacity: 0.8;
+  position: relative;
+  padding: var(--space-4) 0 0;
+}
+.footer::before {
+  content: '✚';
+  display: block;
+  font-family: var(--font-display);
+  color: var(--gold-leaf);
+  font-size: 1rem;
+  margin-bottom: var(--space-2);
+  text-shadow: 0 0 6px rgba(232, 197, 82, 0.5);
 }
 .footer a {
   color: var(--gold-pale);
   border-bottom: 1px dotted var(--gold-deep);
 }
+.footer a:hover { color: var(--gold-bright); }
 
-/* ── Mobile tightening ─────────────────────────────────────────── */
+/* ── Mobile tightening ──────────────────────────────────────────── */
 @media (max-width: 700px) {
   .app {
-    padding: var(--space-3) var(--space-2) var(--space-8);
+    padding: var(--space-4) var(--space-2) var(--space-8);
   }
 
   .header {
     padding: var(--space-3) var(--space-2) var(--space-2);
     gap: var(--space-2);
   }
+  .header__tympanum {
+    width: min(420px, 92vw);
+    height: 48px;
+  }
   .header__title {
-    font-size: clamp(1.4rem, 6vw, 1.9rem);
+    font-size: clamp(1.5rem, 7vw, 2rem);
+    gap: var(--space-3);
   }
-  .header__subtitle {
-    font-size: 0.82rem;
+  .header__title::before,
+  .header__title::after {
+    width: 28px;
+    height: 14px;
   }
-  .header__controls {
-    gap: var(--space-2);
-  }
+  .header__subtitle { font-size: 0.95rem; }
+
+  .header__controls { gap: var(--space-2); }
   .month-nav {
     padding: var(--space-1) var(--space-2);
     gap: var(--space-1);
   }
   .month-nav__label {
     font-size: 0.85rem;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     min-width: 9ch;
   }
   .today-btn,
@@ -710,17 +982,11 @@
   .lang-selector button {
     padding: var(--space-1) var(--space-3);
     font-size: 0.66rem;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
   }
-  .lang-selector button {
-    min-width: 2rem;
-  }
-  .icon-btn {
-    width: 1.75rem;
-    height: 1.75rem;
-  }
+  .lang-selector button { min-width: 2rem; }
+  .icon-btn { width: 1.75rem; height: 1.75rem; }
 
-  /* Slimmer meander border insets so the grid keeps more vertical room */
   .meander-border::before,
   .meander-border::after {
     height: 12px;
@@ -729,101 +995,84 @@
   .meander-border::before { top: 2px; }
   .meander-border::after  { bottom: 2px; }
 
-  .month {
-    padding: var(--space-4) var(--space-2) var(--space-2);
-  }
+  .month { padding: var(--space-4) var(--space-2) var(--space-2); }
   .month__weekday {
     font-size: 0.62rem;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     padding: var(--space-1) 0;
   }
-  .month__grid {
-    grid-auto-rows: minmax(58px, auto);
-  }
+  .month__grid { grid-auto-rows: minmax(58px, auto); }
 
   .day {
     padding: 3px 4px;
     min-height: 58px;
   }
-  .day__num {
-    font-size: 0.85rem;
-  }
+  .day__num { font-size: 0.88rem; }
   .day__feast {
-    font-size: 0.6rem;
-    line-height: 1.05;
+    font-size: 0.62rem;
+    line-height: 1.08;
     -webkit-line-clamp: 2;
   }
   .day__fastdot {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     top: 4px;
     left: 4px;
   }
+  .day[data-today='true'] .day__num,
   .day[data-rank='great'] .day__num {
-    width: 1.5em;
-    height: 1.5em;
-    font-size: 0.72rem;
-    box-shadow: 0 0 0 1.5px var(--gold-leaf), 0 0 6px rgba(201, 162, 39, 0.55);
+    width: 1.6em;
+    height: 1.6em;
+    font-size: 0.78rem;
   }
 
-  /* Today card: tighter ribbon, no inset wreath that eats space */
   .today-card {
     margin: var(--space-2) auto var(--space-4);
     box-shadow:
       inset 0 0 0 3px var(--parchment),
       inset 0 0 0 4px var(--gold-pale),
-      0 3px 14px rgba(0, 0, 0, 0.25);
+      0 4px 18px rgba(0, 0, 0, 0.35);
   }
-  .today-card__ribbon {
-    padding: var(--space-1) var(--space-3);
-  }
+  .today-card__ribbon { padding: var(--space-1) var(--space-3); }
   .today-card__label {
-    font-size: 0.72rem;
-    letter-spacing: 0.18em;
+    font-size: 0.74rem;
+    letter-spacing: 0.22em;
   }
   .today-card__body {
     padding: var(--space-3) var(--space-4);
     gap: var(--space-1);
   }
-  .today-card__date {
-    font-size: 0.95rem;
-  }
-  .today-card__feast {
-    font-size: 0.95rem;
-  }
+  .today-card__date { font-size: 0.98rem; }
+  .today-card__feast { font-size: 0.98rem; }
   .today-card__reason,
-  .today-card__saints {
-    font-size: 0.85rem;
-  }
+  .today-card__saints { font-size: 0.88rem; }
 
-  /* Day-detail panel: shrink the arch top so it doesn't dominate */
   .detail.arch {
-    border-radius: 80px 80px var(--radius) var(--radius);
+    border-radius: 90px 90px var(--radius) var(--radius);
     padding: var(--space-8) var(--space-4) var(--space-4);
     box-shadow:
       inset 0 0 0 3px var(--parchment),
       inset 0 0 0 4px var(--gold-pale),
-      0 4px 18px rgba(0, 0, 0, 0.3);
+      var(--shadow-vellum);
   }
-  .detail__date {
-    font-size: 1.1rem;
+  .arch::before {
+    width: 28px;
+    height: 28px;
   }
-  .detail__weekday {
-    font-size: 0.85rem;
-  }
-  .saint-item {
-    font-size: 0.98rem;
-  }
+  .detail__date { font-size: 1.15rem; }
+  .detail__weekday { font-size: 0.88rem; }
+  .saint-item { font-size: 1rem; }
 
   .legend {
     gap: var(--space-2);
-    font-size: 0.7rem;
-    margin-top: var(--space-3);
+    font-size: 0.72rem;
+    margin-top: var(--space-4);
+    padding: var(--space-2);
   }
 
   .footer {
     margin-top: var(--space-6);
-    font-size: 0.78rem;
+    font-size: 0.82rem;
   }
 }
 
