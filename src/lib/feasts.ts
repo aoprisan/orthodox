@@ -65,12 +65,19 @@ function extendedSaintsFor(key: string, existing: Saint[]): Saint[] {
     out.push(makeSaint());
   };
   for (const e of ext.en) {
-    tryAdd(e.name, () => ({ name: e.name, secondary: true }));
+    // EN bucket carries the OCA English text plus an optional Romanian
+    // rendering produced by the template translator at build time.
+    tryAdd(e.name, () =>
+      e.ro
+        ? { name: { en: e.name, ro: e.ro }, secondary: true }
+        : { name: e.name, secondary: true },
+    );
   }
   for (const e of ext.ro) {
-    // Romanian-only entries: store the RO text in both slots so EN viewers
-    // see the Romanian wording rather than an empty cell. This is honest:
-    // we don't have an English translation for these names.
+    // RO bucket: native Romanian entries (LUMINA / PasiSfinti). Mirror the
+    // Romanian text into the EN slot so English viewers see the Romanian
+    // wording rather than nothing — this is honest, since we don't have a
+    // proper English translation of these names.
     tryAdd(e.name, () => ({ name: { en: e.name, ro: e.name }, secondary: true }));
   }
   return out;

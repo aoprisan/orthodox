@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Builds src/data/extendedSynaxarion.ts from upstream open-source datasets:
-//   • OCA Julian saints  (English, structured, 366 days)
-//   • PasiSfinti 2026    (Romanian, free-text description per day, 366 days)
+//   • OCA Julian saints     (English, structured, 366 days)
+//   • LUMINA / marturisire   (Romanian, principal + others[], 365 days, 2026)
+//   • PasiSfinti 2026        (Romanian, free-text description per day; secondary)
 //
 // Run:
 //   node scripts/buildExtendedSynaxarion.mjs
@@ -12,6 +13,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { translateEntry } from './translateToRo.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -22,7 +24,12 @@ const sources = {
     url: 'https://raw.githubusercontent.com/nikolareljin/orthodox-calendar/main/backend/app/data/oca_julian.json',
     cache: resolve(tmp, 'oca_julian.json'),
   },
-  ro: {
+  lumina: {
+    url: 'https://raw.githubusercontent.com/citrixache-commits/marturisire/main/data/saints-calendar.ts',
+    cache: resolve(tmp, 'lumina.ts'),
+    parse: 'lumina-ts',
+  },
+  pasi: {
     url: 'https://raw.githubusercontent.com/ocaciuc/PasiSfinti/main/docs/calendar_with_comments_2026.json',
     cache: resolve(tmp, 'pasisfinti_2026.json'),
   },
@@ -35,7 +42,29 @@ async function fetchCached(s) {
     if (!res.ok) throw new Error(`fetch ${s.url}: HTTP ${res.status}`);
     await writeFile(s.cache, await res.text());
   }
-  return JSON.parse(await readFile(s.cache, 'utf8'));
+  const raw = await readFile(s.cache, 'utf8');
+  if (s.parse === 'lumina-ts') return parseLuminaTs(raw);
+  return JSON.parse(raw);
+}
+
+// Parse the LUMINA TypeScript source: extract the saintsCalendar object,
+// turn TS keys into quoted JSON keys, strip trailing commas, JSON.parse.
+function parseLuminaTs(text) {
+  const start = text.indexOf('saintsCalendar:');
+  const open = text.indexOf('{', start);
+  let depth = 0;
+  let end = -1;
+  for (let i = open; i < text.length; i++) {
+    if (text[i] === '{') depth++;
+    else if (text[i] === '}') {
+      depth--;
+      if (depth === 0) { end = i; break; }
+    }
+  }
+  let obj = text.slice(open, end + 1);
+  obj = obj.replace(/(\W)(name|others|fasting|type|gospel|gospelRef)(\s*:)/g, '$1"$2"$3');
+  obj = obj.replace(/,(\s*[}\]])/g, '$1');
+  return JSON.parse(obj);
 }
 
 const mmdd = (m, d) => `${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
@@ -109,11 +138,25 @@ function isFeastRO(part) {
 }
 
 const oca = await fetchCached(sources.oca);
-const roYear = (await fetchCached(sources.ro))['2026'];
+const lumina = await fetchCached(sources.lumina);
+const pasiYear = (await fetchCached(sources.pasi))['2026'];
 
 const out = {};
+const addRo = (key, raw) => {
+  if (!raw) return;
+  const cleaned = raw.replace(/\s+/g, ' ').trim().replace(/[.,;:\s]+$/, '');
+  if (cleaned.length < 3) return;
+  if (isFeastRO(cleaned)) return;
+  out[key] ??= { en: [], ro: [] };
+  if (!out[key].ro.some((x) => x.name === cleaned)) {
+    out[key].ro.push({ name: cleaned });
+  }
+};
 
 // English from OCA — use the longer `title` field (cleaner than `name`).
+// While we're here, run each entry through the template translator so RO
+// viewers see a Romanian rendering when there isn't a native RO entry to
+// fall back on.
 for (const day of oca) {
   const key = day.month_day;
   out[key] ??= { en: [], ro: [] };
@@ -121,25 +164,36 @@ for (const day of oca) {
     if (isFeastEN(s)) continue;
     const title = cleanName(s.title || s.name);
     if (!title) continue;
-    if (!out[key].en.some((x) => x.name === title)) {
-      out[key].en.push({ name: title });
-    }
+    if (out[key].en.some((x) => x.name === title)) continue;
+    const ro = translateEntry(s) || undefined;
+    out[key].en.push(ro ? { name: title, ro } : { name: title });
   }
 }
 
-// Romanian from PasiSfinti — split the free-text description by ';'.
-for (const monthStr of Object.keys(roYear)) {
+// Romanian primary source: LUMINA / marturisire — keyed by "YYYY-MM-DD",
+// each day has a `name` (principal) and `others[]` (lesser). The principal
+// often matches what's already in fixedFeasts.ts; we still feed it in so
+// the in-app dedup (which only knows our curated list) can catch overlaps,
+// and any leftover principal that isn't in our curated dataset appears as
+// a secondary entry.
+for (const [dateKey, day] of Object.entries(lumina)) {
+  const m = parseInt(dateKey.slice(5, 7), 10);
+  const d = parseInt(dateKey.slice(8, 10), 10);
+  if (!m || !d) continue;
+  const key = mmdd(m, d);
+  addRo(key, day.name);
+  for (const o of day.others || []) addRo(key, o);
+}
+
+// Romanian secondary: PasiSfinti — fills gaps from a different selection.
+for (const monthStr of Object.keys(pasiYear)) {
   const m = parseInt(monthStr, 10);
-  for (const dayEntry of roYear[monthStr]) {
+  for (const dayEntry of pasiYear[monthStr]) {
     const d = parseInt(dayEntry.dayNumber, 10);
     if (!d) continue;
     const key = mmdd(m, d);
-    out[key] ??= { en: [], ro: [] };
     for (const part of parseRoDescription(dayEntry.description)) {
-      if (isFeastRO(part)) continue;
-      if (!out[key].ro.some((x) => x.name === part)) {
-        out[key].ro.push({ name: part });
-      }
+      addRo(key, part);
     }
   }
 }
@@ -150,15 +204,23 @@ const keys = Object.keys(out).sort();
 const lines = [];
 lines.push('// AUTO-GENERATED by scripts/buildExtendedSynaxarion.mjs — do not edit.');
 lines.push('// Sources:');
-lines.push('//   English: https://github.com/nikolareljin/orthodox-calendar  (OCA Julian)');
-lines.push('//   Romanian: https://github.com/ocaciuc/PasiSfinti               (calendar_with_comments_2026)');
+lines.push('//   English:  https://github.com/nikolareljin/orthodox-calendar       (OCA Julian)');
+lines.push('//   Romanian: https://github.com/citrixache-commits/marturisire        (LUMINA — primary)');
+lines.push('//             https://github.com/ocaciuc/PasiSfinti                    (secondary)');
 lines.push('//');
 lines.push('// This is the "lesser commemorations" supplement to fixedFeasts.ts. The');
 lines.push('// principal saints of each day remain in fixedFeasts.ts (bilingual,');
 lines.push('// curated). feasts.ts merges the two at lookup time, deduplicating by');
 lines.push('// a normalized-name comparison.');
 lines.push('');
-lines.push('export interface ExtSaintRaw { name: string }');
+lines.push('export interface ExtSaintRaw {');
+lines.push('  /** Source-language text. For the `en` bucket this is English; for');
+lines.push('   *  the `ro` bucket it is Romanian. */');
+lines.push('  name: string;');
+lines.push('  /** Optional companion translation. For OCA entries this is the');
+lines.push('   *  template-translated Romanian rendering. */');
+lines.push('  ro?: string;');
+lines.push('}');
 lines.push('export interface ExtDay { en: ExtSaintRaw[]; ro: ExtSaintRaw[] }');
 lines.push('');
 lines.push('export const extendedSynaxarion: Record<string, ExtDay> = {');
