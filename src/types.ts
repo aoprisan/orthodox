@@ -1,5 +1,7 @@
 export type CalendarKind = 'new' | 'old';
 
+export type Lang = 'en' | 'ro';
+
 export type FeastRank = 'great' | 'major' | 'minor';
 
 export interface Feast {
@@ -26,9 +28,48 @@ export type FastLevel =
   | 'dairy'
   | 'fast-free';
 
+export type FastReasonCode =
+  | 'brightWeek'
+  | 'pascha'
+  | 'holyWeek'
+  | 'holyThursday'
+  | 'palmSunday'
+  | 'lazarusSaturday'
+  | 'annunciation'
+  | 'greatLentSatSun'
+  | 'greatLent'
+  | 'cheesefareWeek'
+  | 'publicanPharisee'
+  | 'weekAfterPentecost'
+  | 'pentecostarionWedFri'
+  | 'pentecostarion'
+  | 'apostlesFastWedFri'
+  | 'apostlesFastMonday'
+  | 'apostlesFast'
+  | 'twelveDays'
+  | 'eveOfTheophany'
+  | 'beheadingForerunner'
+  | 'exaltationCross'
+  | 'transfigurationFish'
+  | 'dormitionFastWedFri'
+  | 'dormitionFastSatSun'
+  | 'dormitionFast'
+  | 'entryTheotokosFish'
+  | 'nativityFastWedFri'
+  | 'nativityForefeastSatSun'
+  | 'nativityForefeast'
+  | 'nativityFast'
+  | 'theophanyFish'
+  | 'meetingFish'
+  | 'dormitionFish'
+  | 'nativityTheotokosFish'
+  | 'wednesdayFast'
+  | 'fridayFast'
+  | 'fastFree';
+
 export interface FastInfo {
   level: FastLevel;
-  reason: string;
+  code: FastReasonCode;
 }
 
 export interface YMD {

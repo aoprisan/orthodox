@@ -115,6 +115,156 @@
   background: rgba(232, 197, 82, 0.12);
 }
 
+/* ── Language selector ─────────────────────────────────────────── */
+.lang-selector {
+  display: inline-flex;
+  border: 1px solid var(--gold-deep);
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(243, 231, 201, 0.08);
+}
+.lang-selector button {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  padding: var(--space-2) var(--space-3);
+  color: var(--parchment-warm);
+  min-width: 2.5rem;
+  transition: background 120ms ease, color 120ms ease;
+}
+.lang-selector button[aria-pressed='true'] {
+  background: var(--gold-leaf);
+  color: var(--porphyry-dark);
+}
+
+/* ── Today card ────────────────────────────────────────────────── */
+.today-card {
+  position: relative;
+  margin: var(--space-2) auto var(--space-6);
+  max-width: 100%;
+  display: flex;
+  align-items: stretch;
+  background: linear-gradient(
+    135deg,
+    var(--ivory) 0%,
+    var(--parchment) 100%
+  );
+  border: 1px solid var(--gold-deep);
+  border-radius: var(--radius);
+  box-shadow:
+    inset 0 0 0 4px var(--parchment),
+    inset 0 0 0 5px var(--gold-pale),
+    0 4px 20px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.today-card__ribbon {
+  background: var(--porphyry);
+  color: var(--gold-bright);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--space-4);
+  min-width: 110px;
+  position: relative;
+}
+.today-card__ribbon::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -1px;
+  width: 2px;
+  background: var(--gold-leaf);
+}
+.today-card__label {
+  font-family: var(--font-display);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  text-shadow: 0 1px 0 var(--porphyry-dark);
+  writing-mode: horizontal-tb;
+}
+
+.today-card__body {
+  flex: 1;
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.today-card__date {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--porphyry);
+  text-align: left;
+  letter-spacing: 0.02em;
+  padding: 0;
+  border-bottom: 1px dotted var(--gold-deep);
+  align-self: flex-start;
+  cursor: pointer;
+  background: transparent;
+}
+.today-card__date:hover {
+  color: var(--crimson);
+}
+
+.today-card__pill {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+.today-card__reason {
+  font-family: var(--font-accent);
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+}
+
+.today-card__feast {
+  font-family: var(--font-accent);
+  font-size: 1.05rem;
+  color: var(--porphyry);
+  font-weight: 600;
+}
+
+.today-card[data-rank='great'] {
+  background:
+    radial-gradient(circle at 90% 0%, rgba(232, 197, 82, 0.35), transparent 50%),
+    linear-gradient(135deg, var(--ivory) 0%, var(--parchment-warm) 100%);
+  box-shadow:
+    inset 0 0 0 4px var(--parchment),
+    inset 0 0 0 5px var(--porphyry),
+    inset 0 0 0 7px var(--gold-leaf),
+    0 6px 26px rgba(110, 31, 44, 0.35);
+}
+
+.today-card__saints {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 640px) {
+  .today-card {
+    flex-direction: column;
+  }
+  .today-card__ribbon {
+    min-width: 0;
+    padding: var(--space-2);
+  }
+  .today-card__ribbon::after {
+    top: auto;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: 2px;
+  }
+}
+
 /* ── Main layout ────────────────────────────────────────────────── */
 .layout {
   display: grid;

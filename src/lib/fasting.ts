@@ -31,60 +31,59 @@ export function fastFor(date: Date, kind: CalendarKind): FastInfo {
       d.getTime() <= startOfDayUTC(end).getTime();
 
     if (inRange(m.brightMonday, m.brightSaturday)) {
-      return { level: 'fast-free', reason: 'Bright Week' };
+      return { level: 'fast-free', code: 'brightWeek' };
     }
     if (sameDay(d, m.pascha)) {
-      return { level: 'fast-free', reason: 'Pascha' };
+      return { level: 'fast-free', code: 'pascha' };
     }
 
     if (inRange(m.holyMonday, m.holySaturday)) {
       if (sameDay(d, m.holyThursday)) {
-        return { level: 'wine-oil', reason: 'Holy Thursday' };
+        return { level: 'wine-oil', code: 'holyThursday' };
       }
-      return { level: 'strict', reason: 'Holy Week' };
+      return { level: 'strict', code: 'holyWeek' };
     }
 
     if (sameDay(d, m.palmSunday)) {
-      return { level: 'fish', reason: 'Palm Sunday' };
+      return { level: 'fish', code: 'palmSunday' };
     }
     if (sameDay(d, m.lazarusSaturday)) {
-      return { level: 'wine-oil', reason: 'Lazarus Saturday' };
+      return { level: 'wine-oil', code: 'lazarusSaturday' };
     }
 
     const greatLentEnd = addDays(m.lazarusSaturday, -1);
     if (inRange(m.cleanMonday, greatLentEnd)) {
       const annunciationCivil = liturgicalDate(year, 3, 25, kind);
       if (sameDay(d, annunciationCivil)) {
-        return { level: 'fish', reason: 'Annunciation' };
+        return { level: 'fish', code: 'annunciation' };
       }
       if (dow === 0 || dow === 6) {
-        return { level: 'wine-oil', reason: 'Great Lent — Saturday/Sunday' };
+        return { level: 'wine-oil', code: 'greatLentSatSun' };
       }
-      return { level: 'strict', reason: 'Great Lent' };
+      return { level: 'strict', code: 'greatLent' };
     }
 
     const cheesefareWeekStart = addDays(m.cheesefare, -6);
     if (inRange(cheesefareWeekStart, m.cheesefare)) {
-      return { level: 'dairy', reason: 'Cheesefare Week — no meat, dairy permitted' };
+      return { level: 'dairy', code: 'cheesefareWeek' };
     }
 
     const ppWeekEnd = addDays(m.triodionStart, 6);
     if (inRange(m.triodionStart, ppWeekEnd) && (dow === 3 || dow === 5)) {
-      return { level: 'fast-free', reason: 'Week of the Publican & Pharisee' };
+      return { level: 'fast-free', code: 'publicanPharisee' };
     }
 
     const afterPentecostEnd = addDays(m.pentecost, 6);
     if (inRange(m.pentecost, afterPentecostEnd)) {
-      return { level: 'fast-free', reason: 'Week after Pentecost' };
+      return { level: 'fast-free', code: 'weekAfterPentecost' };
     }
 
-    // Pentecostarion (Thomas Sunday → eve of Pentecost): Wed/Fri = fish; otherwise fast-free
     const pentecostarionEnd = addDays(m.pentecost, -1);
     if (inRange(m.thomasSunday, pentecostarionEnd)) {
       if (dow === 3 || dow === 5) {
-        return { level: 'fish', reason: 'Pentecostarion — Wed/Fri' };
+        return { level: 'fish', code: 'pentecostarionWedFri' };
       }
-      return { level: 'fast-free', reason: 'Pentecostarion' };
+      return { level: 'fast-free', code: 'pentecostarion' };
     }
 
     const apostlesEnd = liturgicalDate(y, 6, 28, kind);
@@ -92,9 +91,9 @@ export function fastFor(date: Date, kind: CalendarKind): FastInfo {
       d.getTime() >= startOfDayUTC(m.apostlesFastStart).getTime() &&
       d.getTime() <= apostlesEnd.getTime()
     ) {
-      if (dow === 3 || dow === 5) return { level: 'strict', reason: "Apostles' Fast — Wed/Fri" };
-      if (dow === 1) return { level: 'wine-oil', reason: "Apostles' Fast — Monday" };
-      return { level: 'fish', reason: "Apostles' Fast" };
+      if (dow === 3 || dow === 5) return { level: 'strict', code: 'apostlesFastWedFri' };
+      if (dow === 1) return { level: 'wine-oil', code: 'apostlesFastMonday' };
+      return { level: 'fish', code: 'apostlesFast' };
     }
   }
 
@@ -104,24 +103,24 @@ export function fastFor(date: Date, kind: CalendarKind): FastInfo {
     (lit.m === 12 && lit.d >= 25) ||
     (lit.m === 1 && lit.d <= 4)
   ) {
-    return { level: 'fast-free', reason: 'Twelve Days of Christmas' };
+    return { level: 'fast-free', code: 'twelveDays' };
   }
   if (lit.m === 1 && lit.d === 5) {
-    return { level: 'strict', reason: 'Eve of Theophany' };
+    return { level: 'strict', code: 'eveOfTheophany' };
   }
 
   if (lit.m === 8 && lit.d === 29) {
-    return { level: 'strict', reason: 'Beheading of the Forerunner — strict fast' };
+    return { level: 'strict', code: 'beheadingForerunner' };
   }
   if (lit.m === 9 && lit.d === 14) {
-    return { level: 'strict', reason: 'Exaltation of the Cross — strict fast' };
+    return { level: 'strict', code: 'exaltationCross' };
   }
 
   if (lit.m === 8 && lit.d >= 1 && lit.d <= 14) {
-    if (lit.d === 6) return { level: 'fish', reason: 'Transfiguration — fish permitted' };
-    if (dow === 3 || dow === 5) return { level: 'strict', reason: 'Dormition Fast — Wed/Fri' };
-    if (dow === 0 || dow === 6) return { level: 'wine-oil', reason: 'Dormition Fast — Sat/Sun' };
-    return { level: 'strict', reason: 'Dormition Fast' };
+    if (lit.d === 6) return { level: 'fish', code: 'transfigurationFish' };
+    if (dow === 3 || dow === 5) return { level: 'strict', code: 'dormitionFastWedFri' };
+    if (dow === 0 || dow === 6) return { level: 'wine-oil', code: 'dormitionFastSatSun' };
+    return { level: 'strict', code: 'dormitionFast' };
   }
 
   const inNativityFast =
@@ -129,37 +128,35 @@ export function fastFor(date: Date, kind: CalendarKind): FastInfo {
   if (inNativityFast) {
     const stricter = lit.m === 12 && lit.d >= 20;
     if (lit.m === 11 && lit.d === 21) {
-      return { level: 'fish', reason: 'Entry of the Theotokos — fish permitted' };
+      return { level: 'fish', code: 'entryTheotokosFish' };
     }
     if (dow === 3 || dow === 5) {
-      return { level: stricter ? 'strict' : 'wine-oil', reason: 'Nativity Fast — Wed/Fri' };
+      return { level: stricter ? 'strict' : 'wine-oil', code: 'nativityFastWedFri' };
     }
     if (stricter) {
-      if (dow === 0 || dow === 6) return { level: 'wine-oil', reason: 'Nativity Forefeast — Sat/Sun' };
-      return { level: 'wine-oil', reason: 'Nativity Forefeast' };
+      if (dow === 0 || dow === 6) return { level: 'wine-oil', code: 'nativityForefeastSatSun' };
+      return { level: 'wine-oil', code: 'nativityForefeast' };
     }
-    return { level: 'fish', reason: 'Nativity Fast' };
+    return { level: 'fish', code: 'nativityFast' };
   }
 
-  // Great Feasts that override the weekly Wed/Fri fast (those not already
-  // handled by a surrounding fasting window). Fish is permitted.
-  const greatFeastFish: Array<[number, number, string]> = [
-    [1, 6, 'Theophany'],
-    [2, 2, 'Meeting of the Lord'],
-    [3, 25, 'Annunciation'],
-    [8, 15, 'Dormition of the Theotokos'],
-    [9, 8, 'Nativity of the Theotokos'],
+  const greatFeastFish: Array<[number, number, FastInfo['code']]> = [
+    [1, 6, 'theophanyFish'],
+    [2, 2, 'meetingFish'],
+    [3, 25, 'annunciation'],
+    [8, 15, 'dormitionFish'],
+    [9, 8, 'nativityTheotokosFish'],
   ];
-  for (const [fm, fd, label] of greatFeastFish) {
+  for (const [fm, fd, code] of greatFeastFish) {
     if (lit.m === fm && lit.d === fd) {
-      return { level: 'fish', reason: `${label} — fish permitted` };
+      return { level: 'fish', code };
     }
   }
 
-  if (dow === 3) return { level: 'strict', reason: 'Wednesday — weekly fast' };
-  if (dow === 5) return { level: 'strict', reason: 'Friday — weekly fast' };
+  if (dow === 3) return { level: 'strict', code: 'wednesdayFast' };
+  if (dow === 5) return { level: 'strict', code: 'fridayFast' };
 
-  return { level: 'fast-free', reason: 'Fast-free' };
+  return { level: 'fast-free', code: 'fastFree' };
 }
 
 function liturgicalDate(year: number, m: number, d: number, kind: CalendarKind): Date {

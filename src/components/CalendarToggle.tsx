@@ -1,28 +1,30 @@
-import type { CalendarKind } from '../types';
+import type { CalendarKind, Lang } from '../types';
+import { t } from '../i18n/strings';
 
 interface Props {
   kind: CalendarKind;
+  lang: Lang;
   onChange: (kind: CalendarKind) => void;
 }
 
-export function CalendarToggle({ kind, onChange }: Props) {
+export function CalendarToggle({ kind, lang, onChange }: Props) {
   return (
-    <div className="calendar-toggle" role="group" aria-label="Calendar style">
+    <div className="calendar-toggle" role="group" aria-label={t('newCalendar', lang)}>
       <button
         type="button"
         aria-pressed={kind === 'new'}
         onClick={() => onChange('new')}
-        title="Revised Julian Calendar (Greek, Antiochian, OCA, …)"
+        title={t('newCalendarTitle', lang)}
       >
-        New Calendar
+        {t('newCalendar', lang)}
       </button>
       <button
         type="button"
         aria-pressed={kind === 'old'}
         onClick={() => onChange('old')}
-        title="Julian Calendar (Russian, Serbian, Jerusalem, Athonite)"
+        title={t('oldCalendarTitle', lang)}
       >
-        Old Calendar
+        {t('oldCalendar', lang)}
       </button>
     </div>
   );

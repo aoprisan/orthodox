@@ -1,62 +1,66 @@
-import type { CalendarKind } from '../types';
+import type { CalendarKind, Lang } from '../types';
 import { CalendarToggle } from './CalendarToggle';
-
-const MONTH_NAMES = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
+import { LangSelector } from './LangSelector';
+import { locale, t } from '../i18n/strings';
 
 interface Props {
   year: number;
   month: number; // 1..12
   kind: CalendarKind;
+  lang: Lang;
   onPrev: () => void;
   onNext: () => void;
   onToday: () => void;
   onKindChange: (kind: CalendarKind) => void;
+  onLangChange: (lang: Lang) => void;
 }
 
-export function Header({ year, month, kind, onPrev, onNext, onToday, onKindChange }: Props) {
+export function Header({
+  year,
+  month,
+  kind,
+  lang,
+  onPrev,
+  onNext,
+  onToday,
+  onKindChange,
+  onLangChange,
+}: Props) {
+  const monthLabel = new Intl.DateTimeFormat(locale(lang), {
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(Date.UTC(year, month - 1, 1)));
+
   return (
     <header className="header">
-      <h1 className="header__title">Orthodox Calendar</h1>
-      <div className="header__subtitle">Feasts, Saints &amp; the Holy Fasts</div>
+      <h1 className="header__title">{t('appTitle', lang)}</h1>
+      <div className="header__subtitle">{t('appSubtitle', lang)}</div>
       <div className="header__controls">
         <div className="month-nav">
           <button
             type="button"
             className="icon-btn"
-            aria-label="Previous month"
+            aria-label={t('prevMonth', lang)}
             onClick={onPrev}
           >
             ◀
           </button>
-          <span className="month-nav__label">
-            {MONTH_NAMES[month - 1]} {year}
-          </span>
+          <span className="month-nav__label">{monthLabel}</span>
           <button
             type="button"
             className="icon-btn"
-            aria-label="Next month"
+            aria-label={t('nextMonth', lang)}
             onClick={onNext}
           >
             ▶
           </button>
         </div>
         <button type="button" className="today-btn" onClick={onToday}>
-          Today
+          {t('today', lang)}
         </button>
-        <CalendarToggle kind={kind} onChange={onKindChange} />
+        <CalendarToggle kind={kind} lang={lang} onChange={onKindChange} />
+        <LangSelector lang={lang} onChange={onLangChange} />
       </div>
     </header>
   );

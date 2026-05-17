@@ -1,6 +1,7 @@
-import type { CalendarKind, FastInfo, Feast } from '../types';
+import type { CalendarKind, FastInfo, Feast, Lang } from '../types';
 import { entryForDate, highestRank } from '../lib/feasts';
 import { fastFor } from '../lib/fasting';
+import { translateName } from '../i18n/names';
 
 interface Props {
   date: Date;
@@ -8,12 +9,13 @@ interface Props {
   isToday: boolean;
   isSelected: boolean;
   kind: CalendarKind;
+  lang: Lang;
   onSelect: (date: Date) => void;
 }
 
-function topFeastLabel(feasts: Feast[]): string {
+function topFeast(feasts: Feast[]): Feast | undefined {
   const ordered = [...feasts].sort((a, b) => rankWeight(b.rank) - rankWeight(a.rank));
-  return ordered[0]?.name ?? '';
+  return ordered[0];
 }
 
 function rankWeight(rank: Feast['rank']): number {
@@ -27,11 +29,12 @@ function rankWeight(rank: Feast['rank']): number {
   }
 }
 
-export function DayCell({ date, inMonth, isToday, isSelected, kind, onSelect }: Props) {
+export function DayCell({ date, inMonth, isToday, isSelected, kind, lang, onSelect }: Props) {
   const entry = entryForDate(date, kind);
   const fast: FastInfo = fastFor(date, kind);
   const rank = highestRank(entry.feasts);
-  const feastLabel = topFeastLabel(entry.feasts);
+  const top = topFeast(entry.feasts);
+  const label = top ? translateName(top.name, lang) : '';
 
   return (
     <button
@@ -42,16 +45,15 @@ export function DayCell({ date, inMonth, isToday, isSelected, kind, onSelect }: 
       data-selected={isSelected}
       data-rank={rank ?? undefined}
       onClick={() => onSelect(date)}
-      aria-label={`${date.toLocaleDateString(undefined, { dateStyle: 'full' })}${feastLabel ? ' — ' + feastLabel : ''}`}
+      aria-label={`${date.toLocaleDateString(undefined, { dateStyle: 'full' })}${label ? ' — ' + label : ''}`}
     >
       <span
         className="day__fastdot"
         data-level={fast.level}
-        title={fast.reason}
         aria-hidden="true"
       />
       <span className="day__num">{date.getUTCDate()}</span>
-      {feastLabel ? <span className="day__feast">{feastLabel}</span> : null}
+      {label ? <span className="day__feast">{label}</span> : null}
     </button>
   );
 }

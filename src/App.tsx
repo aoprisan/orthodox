@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { CalendarKind } from './types';
+import type { CalendarKind, FastLevel, Lang } from './types';
 import { Header } from './components/Header';
 import { MonthGrid } from './components/MonthGrid';
 import { DayDetail } from './components/DayDetail';
+import { TodayCard } from './components/TodayCard';
 import { startOfDayUTC } from './lib/julian';
+import { t, tLegendLevel } from './i18n/strings';
 
-const STORAGE_KEY = 'orthodox-calendar:kind';
+const KIND_KEY = 'orthodox-calendar:kind';
+const LANG_KEY = 'orthodox-calendar:lang';
 
 function todayUTC(): Date {
   return startOfDayUTC(new Date());
@@ -32,28 +35,42 @@ function writeHash(date: Date) {
   }
 }
 
+function detectInitialLang(): Lang {
+  const stored = localStorage.getItem(LANG_KEY);
+  if (stored === 'ro' || stored === 'en') return stored;
+  const nav = navigator.language?.toLowerCase() ?? '';
+  if (nav.startsWith('ro')) return 'ro';
+  return 'en';
+}
+
 export function App() {
   const initial = parseHash();
   const [selected, setSelected] = useState<Date>(() =>
-    initial
-      ? new Date(Date.UTC(initial.y, initial.m - 1, initial.d))
-      : todayUTC(),
+    initial ? new Date(Date.UTC(initial.y, initial.m - 1, initial.d)) : todayUTC(),
   );
   const [kind, setKind] = useState<CalendarKind>(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = localStorage.getItem(KIND_KEY);
     return stored === 'old' ? 'old' : 'new';
   });
+  const [lang, setLang] = useState<Lang>(detectInitialLang);
 
   const [viewYear, setViewYear] = useState<number>(selected.getUTCFullYear());
   const [viewMonth, setViewMonth] = useState<number>(selected.getUTCMonth() + 1);
+
+  const today = useMemo(() => todayUTC(), []);
 
   useEffect(() => {
     writeHash(selected);
   }, [selected]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, kind);
+    localStorage.setItem(KIND_KEY, kind);
   }, [kind]);
+
+  useEffect(() => {
+    localStorage.setItem(LANG_KEY, lang);
+    document.documentElement.setAttribute('lang', lang);
+  }, [lang]);
 
   useEffect(() => {
     const onHash = () => {
@@ -90,10 +107,10 @@ export function App() {
     setViewMonth(m);
   };
   const handleToday = () => {
-    const t = todayUTC();
-    setSelected(t);
-    setViewYear(t.getUTCFullYear());
-    setViewMonth(t.getUTCMonth() + 1);
+    const tDate = todayUTC();
+    setSelected(tDate);
+    setViewYear(tDate.getUTCFullYear());
+    setViewMonth(tDate.getUTCMonth() + 1);
   };
   const handleSelect = (date: Date) => {
     setSelected(date);
@@ -101,16 +118,7 @@ export function App() {
     setViewMonth(date.getUTCMonth() + 1);
   };
 
-  const fastLegend = useMemo(
-    () => [
-      { level: 'strict', label: 'Strict' },
-      { level: 'wine-oil', label: 'Wine & Oil' },
-      { level: 'fish', label: 'Fish' },
-      { level: 'dairy', label: 'Dairy' },
-      { level: 'fast-free', label: 'Fast-free' },
-    ],
-    [],
-  );
+  const legendItems: FastLevel[] = ['strict', 'wine-oil', 'fish', 'dairy', 'fast-free'];
 
   return (
     <div className="app">
@@ -118,33 +126,34 @@ export function App() {
         year={viewYear}
         month={viewMonth}
         kind={kind}
+        lang={lang}
         onPrev={handlePrev}
         onNext={handleNext}
         onToday={handleToday}
         onKindChange={setKind}
+        onLangChange={setLang}
       />
+      <TodayCard today={today} kind={kind} lang={lang} onJump={handleSelect} />
       <main className="layout">
         <MonthGrid
           year={viewYear}
           month={viewMonth}
           selected={selected}
           kind={kind}
+          lang={lang}
           onSelect={handleSelect}
         />
-        <DayDetail date={selected} kind={kind} />
+        <DayDetail date={selected} kind={kind} lang={lang} />
       </main>
       <div className="legend">
-        {fastLegend.map((l) => (
-          <span key={l.level} className="legend__item">
-            <span className="legend__swatch" style={{ background: `var(--fast-${l.level})` }} />
-            {l.label}
+        {legendItems.map((level) => (
+          <span key={level} className="legend__item">
+            <span className="legend__swatch" style={{ background: `var(--fast-${level})` }} />
+            {tLegendLevel(level, lang)}
           </span>
         ))}
       </div>
-      <footer className="footer">
-        Καλὴ Σαρακοστή · A static calendar; consult your priest for the rule
-        of your parish.
-      </footer>
+      <footer className="footer">{t('footer', lang)}</footer>
     </div>
   );
 }

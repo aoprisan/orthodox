@@ -1,28 +1,17 @@
-import type { CalendarKind, Feast } from '../types';
+import type { CalendarKind, Feast, Lang } from '../types';
 import { entryForDate } from '../lib/feasts';
 import { fastFor } from '../lib/fasting';
 import { gregorianToJulian } from '../lib/julian';
+import { locale, t, tFastLevel, tFastReason, tRank } from '../i18n/strings';
+import { translateName } from '../i18n/names';
 
 interface Props {
   date: Date;
   kind: CalendarKind;
+  lang: Lang;
 }
 
-const RANK_LABEL: Record<Feast['rank'], string> = {
-  great: 'Great Feast',
-  major: 'Major Feast',
-  minor: 'Commemoration',
-};
-
-const FAST_LABEL: Record<string, string> = {
-  'strict': 'Strict Fast',
-  'wine-oil': 'Wine & Oil',
-  'fish': 'Fish Permitted',
-  'dairy': 'Dairy Permitted',
-  'fast-free': 'Fast-Free',
-};
-
-export function DayDetail({ date, kind }: Props) {
+export function DayDetail({ date, kind, lang }: Props) {
   const entry = entryForDate(date, kind);
   const fast = fastFor(date, kind);
   const julian = gregorianToJulian(
@@ -31,18 +20,18 @@ export function DayDetail({ date, kind }: Props) {
     date.getUTCDate(),
   );
 
-  const civilLabel = date.toLocaleDateString(undefined, {
+  const civilLabel = new Intl.DateTimeFormat(locale(lang), {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
     year: 'numeric',
     timeZone: 'UTC',
-  });
+  }).format(date);
 
   const altLabel =
     kind === 'new'
-      ? `Julian: ${monthName(julian.m)} ${julian.d}`
-      : `Gregorian: ${monthName(date.getUTCMonth() + 1)} ${date.getUTCDate()}`;
+      ? `${t('julianPrefix', lang)} ${monthName(julian.m, lang)} ${julian.d}`
+      : `${t('gregorianPrefix', lang)} ${monthName(date.getUTCMonth() + 1, lang)} ${date.getUTCDate()}`;
 
   const sortedFeasts = [...entry.feasts].sort(
     (a, b) => rankWeight(b.rank) - rankWeight(a.rank),
@@ -55,22 +44,22 @@ export function DayDetail({ date, kind }: Props) {
 
       <div className="detail__fast">
         <span className="fast-pill" data-level={fast.level}>
-          {FAST_LABEL[fast.level]}
+          {tFastLevel(fast.level, lang)}
         </span>
-        <span className="detail__fast-reason">{fast.reason}</span>
+        <span className="detail__fast-reason">{tFastReason(fast.code, lang)}</span>
       </div>
 
       <div className="detail__section">
-        <h3 className="detail__section-title">Feasts</h3>
+        <h3 className="detail__section-title">{t('feasts', lang)}</h3>
         {sortedFeasts.length === 0 ? (
-          <p className="empty">No feast commemorated.</p>
+          <p className="empty">{t('noFeast', lang)}</p>
         ) : (
           <ul className="feast-list">
             {sortedFeasts.map((f) => (
               <li key={f.name} className="feast-item" data-rank={f.rank}>
-                <span className="feast-item__rank">{RANK_LABEL[f.rank]}</span>
+                <span className="feast-item__rank">{tRank(f.rank, lang)}</span>
                 <span className="feast-mark" aria-hidden="true">✚ </span>
-                {f.name}
+                {translateName(f.name, lang)}
               </li>
             ))}
           </ul>
@@ -78,14 +67,14 @@ export function DayDetail({ date, kind }: Props) {
       </div>
 
       <div className="detail__section">
-        <h3 className="detail__section-title">Saints</h3>
+        <h3 className="detail__section-title">{t('saints', lang)}</h3>
         {entry.saints.length === 0 ? (
-          <p className="empty">Synaxarion not loaded for this day.</p>
+          <p className="empty">{t('noSaints', lang)}</p>
         ) : (
           <ul className="saint-list">
             {entry.saints.map((s) => (
               <li key={s.name} className="saint-item dropcap">
-                <span className="saint-item__name">{s.name}</span>
+                <span className="saint-item__name">{translateName(s.name, lang)}</span>
                 {s.title ? <span className="saint-item__title">{s.title}</span> : null}
               </li>
             ))}
@@ -107,19 +96,8 @@ function rankWeight(rank: Feast['rank']): number {
   }
 }
 
-function monthName(m: number): string {
-  return [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ][m - 1];
+function monthName(m: number, lang: Lang): string {
+  return new Intl.DateTimeFormat(locale(lang), { month: 'long', timeZone: 'UTC' }).format(
+    new Date(Date.UTC(2000, m - 1, 1)),
+  );
 }
