@@ -30,6 +30,29 @@ export interface DayEntry {
   saints: Saint[];
 }
 
+/**
+ * One saint or feast section within a day's hagiographic reading. Title is
+ * the commemoration line (e.g., "Tot în această zi, pomenirea ..."), and
+ * paragraphs are the lives-of-saints prose. anchor is the source-page
+ * fragment id so attribution can deep-link the exact section.
+ */
+export interface SaintSection {
+  title: string;
+  paragraphs: string[];
+  anchor?: string;
+}
+
+/**
+ * The bundle of saint sections for a single day, lazy-loaded from
+ * /public/lives/{MM}.json. Built from calendar-ortodox.ro pages by
+ * scripts/buildSynaxarLives.mjs.
+ */
+export interface DayLives {
+  sections: SaintSection[];
+  closing?: string;
+  sourceUrl: string;
+}
+
 export type FastLevel =
   | 'strict'
   | 'wine-oil'
