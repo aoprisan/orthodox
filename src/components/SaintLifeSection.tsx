@@ -24,16 +24,20 @@ export function SaintLifeSection({ date, kind, lang }: Props) {
   }, [date, kind]);
 
   useEffect(() => {
-    if (!open || state.status !== 'idle') return;
+    if (!open) return;
     let cancelled = false;
-    setState({ status: 'loading' });
+    // Functional update keeps the load idempotent across re-opens without
+    // putting `state.status` in the dep array — doing so would re-fire this
+    // effect the moment we transition to 'loading', cancelling the in-flight
+    // fetch before it can resolve and leaving the section stuck on the spinner.
+    setState((prev) => (prev.status === 'idle' ? { status: 'loading' } : prev));
     livesForDate(date, kind).then((data) => {
       if (!cancelled) setState({ status: 'ready', data });
     });
     return () => {
       cancelled = true;
     };
-  }, [open, state.status, date, kind]);
+  }, [open, date, kind]);
 
   const data = state.status === 'ready' ? state.data : null;
   const count = data ? data.sections.length : null;
