@@ -55,37 +55,60 @@ rather than a server.
 
 ### Android
 
-Requires Android Studio (with the Android SDK + a recent JDK).
+Requires the Android SDK and a recent JDK. `ANDROID_HOME` (or
+`ANDROID_SDK_ROOT`) must point at the SDK. Android Studio is convenient
+for development but not required by the build scripts.
 
 ```bash
-npm run cap:open:android   # opens the project in Android Studio
-# or
-npm run cap:run:android    # builds and runs on a connected device/emulator
+npm run cap:open:android       # open in Android Studio
+npm run cap:run:android        # build + run on a connected device/emulator
+
+npm run build:android          # debug APK         → build/android/app-debug.apk
+npm run build:android:release  # release APK       → build/android/app-release.apk
+npm run build:android:bundle   # release AAB       → build/android/app-release.aab
 ```
 
-In Android Studio: pick a device/emulator and press Run. To produce a
-release APK/AAB, use **Build → Generate Signed Bundle / APK**.
+Release outputs are signed only if you've configured `signingConfigs` in
+`android/app/build.gradle` (or supplied `android/keystore.properties`).
+Without a signing config, Gradle produces `app-release-unsigned.apk`.
 
 ### iOS
 
-Requires macOS with Xcode and CocoaPods. On first checkout from a
-machine that has just cloned the repo:
+Requires macOS with Xcode and the iOS SDK. Capacitor 6+ uses Swift
+Package Manager, so no `pod install` step is needed.
 
 ```bash
-cd ios/App && pod install && cd ../..
+npm run cap:open:ios           # open in Xcode
+npm run cap:run:ios            # build + run on a simulator/device
+
+npm run build:ios              # archive + IPA     → build/ios/*.ipa
+npm run build:ios:archive      # archive only      → build/ios/App.xcarchive
+npm run build:ios:simulator    # .app for Simulator (unsigned)
 ```
 
-Then:
+`build:ios` defaults to the `development` export method. For other
+methods pass through directly, e.g.:
 
 ```bash
-npm run cap:open:ios       # opens the project in Xcode
-# or
-npm run cap:run:ios        # builds and runs on a simulator/device
+bash scripts/build-ios.sh --export-method app-store
 ```
 
-In Xcode: select a simulator or device and press Run. For App Store
-distribution, configure signing under the **App** target → **Signing &
-Capabilities**, then **Product → Archive**.
+To override export settings, drop an `ExportOptions.plist` at
+`ios/ExportOptions.plist` and the script will use it as-is. For App
+Store distribution, configure signing under the **App** target →
+**Signing & Capabilities** before running the script.
+
+### Clean
+
+```bash
+npm run clean:android       # gradle clean + remove android/app/build, build/android
+npm run clean:ios           # xcodebuild clean + remove ios/App/build, build/ios
+npm run clean:mobile        # both, plus dist/ and build/
+npm run clean:mobile:deep   # also wipe gradle cache, DerivedData, synced web assets
+```
+
+Use the deep clean when a build is misbehaving and you suspect stale
+cached output (e.g. after upgrading Capacitor or switching SDK versions).
 
 ### App identity
 
