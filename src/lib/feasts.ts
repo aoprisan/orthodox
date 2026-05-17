@@ -3,6 +3,7 @@ import { gregorianToJulian, mmdd, ymdFromDate } from './julian';
 import { fixedFeasts } from '../data/fixedFeasts';
 import { extendedSynaxarion } from '../data/extendedSynaxarion';
 import { moveableFeastsOn } from './moveableFeasts';
+import { looksEnglish } from '../i18n/loc';
 
 /**
  * Given a civil (Gregorian) date and the user's calendar selection, return the
@@ -66,10 +67,16 @@ function extendedSaintsFor(key: string, existing: Saint[]): Saint[] {
   };
   for (const e of ext.en) {
     // EN bucket carries the OCA English text plus an optional Romanian
-    // rendering produced by the template translator at build time.
+    // rendering produced by the template translator at build time. The
+    // translator is incomplete and often leaves English words behind
+    // ("Sf. Ap. Andronicus din Seventy și său fellow-laborer"); when that
+    // happens, drop the broken Romanian so the entry stores as a plain
+    // English string. The RO-mode filter in DayDetail/TodayCard then hides
+    // it instead of showing pseudo-Romanian to a Romanian reader.
+    const hasUsableRo = e.ro && !looksEnglish(e.ro);
     tryAdd(e.name, () =>
-      e.ro
-        ? { name: { en: e.name, ro: e.ro }, secondary: true }
+      hasUsableRo
+        ? { name: { en: e.name, ro: e.ro! }, secondary: true }
         : { name: e.name, secondary: true },
     );
   }
