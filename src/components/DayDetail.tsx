@@ -1,9 +1,11 @@
-import type { CalendarKind, Feast, Lang } from '../types';
+import type { CalendarKind, Feast, Lang, Saint } from '../types';
 import { entryForDate } from '../lib/feasts';
 import { fastFor } from '../lib/fasting';
 import { gregorianToJulian } from '../lib/julian';
 import { locale, t, tFastLevel, tFastReason, tRank } from '../i18n/strings';
 import { loc } from '../i18n/loc';
+import { translateName } from '../i18n/names';
+import { SaintLifeSection } from './SaintLifeSection';
 
 interface Props {
   date: Date;
@@ -37,6 +39,16 @@ export function DayDetail({ date, kind, lang }: Props) {
     (a, b) => rankWeight(b.rank) - rankWeight(a.rank),
   );
 
+  // Secondary saints from the OCA Julian dataset are stored as plain English
+  // strings with no Romanian translation in names.ts. In Romanian mode they
+  // would otherwise render as English; hide them so the RO view stays
+  // Romanian. Principal saints (always `{en, ro}`) and PasiSfinti additions
+  // (RO duplicated into both slots) pass through unchanged.
+  const visibleSaints =
+    lang === 'ro'
+      ? entry.saints.filter((s) => !isUntranslatedEnglish(s))
+      : entry.saints;
+
   return (
     <aside className="detail arch">
       <h2 className="detail__date">{civilLabel}</h2>
@@ -69,11 +81,11 @@ export function DayDetail({ date, kind, lang }: Props) {
 
       <div className="detail__section">
         <h3 className="detail__section-title">{t('saints', lang)}</h3>
-        {entry.saints.length === 0 ? (
+        {visibleSaints.length === 0 ? (
           <p className="empty">{t('noSaints', lang)}</p>
         ) : (
           <ul className="saint-list">
-            {entry.saints.map((s, i) => (
+            {visibleSaints.map((s, i) => (
               <li
                 key={i}
                 className={`saint-item${s.secondary ? ' saint-item--secondary' : ' dropcap'}`}
@@ -85,12 +97,21 @@ export function DayDetail({ date, kind, lang }: Props) {
             ))}
           </ul>
         )}
-        {entry.saints.some((s) => s.secondary) ? (
+        {visibleSaints.some((s) => s.secondary) ? (
           <p className="detail__source">{t('synaxarionSource', lang)}</p>
         ) : null}
       </div>
+
+      <SaintLifeSection date={date} kind={kind} lang={lang} />
     </aside>
   );
+}
+
+function isUntranslatedEnglish(s: Saint): boolean {
+  const n = s.name;
+  if (typeof n === 'string') return translateName(n, 'ro') === n;
+  if (!n.ro) return true;
+  return false;
 }
 
 function rankWeight(rank: Feast['rank']): number {
