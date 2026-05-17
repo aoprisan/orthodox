@@ -98,6 +98,18 @@ To override export settings, drop an `ExportOptions.plist` at
 Store distribution, configure signing under the **App** target →
 **Signing & Capabilities** before running the script.
 
+### Clean
+
+```bash
+npm run clean:android       # gradle clean + remove android/app/build, build/android
+npm run clean:ios           # xcodebuild clean + remove ios/App/build, build/ios
+npm run clean:mobile        # both, plus dist/ and build/
+npm run clean:mobile:deep   # also wipe gradle cache, DerivedData, synced web assets
+```
+
+Use the deep clean when a build is misbehaving and you suspect stale
+cached output (e.g. after upgrading Capacitor or switching SDK versions).
+
 ### App identity
 
 App ID and display name live in `capacitor.config.ts`

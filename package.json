@@ -21,7 +21,11 @@
     "build:android:bundle": "bash scripts/build-android.sh --aab",
     "build:ios": "bash scripts/build-ios.sh",
     "build:ios:simulator": "bash scripts/build-ios.sh --simulator",
-    "build:ios:archive": "bash scripts/build-ios.sh --archive-only"
+    "build:ios:archive": "bash scripts/build-ios.sh --archive-only",
+    "clean:android": "bash scripts/clean-android.sh",
+    "clean:ios": "bash scripts/clean-ios.sh",
+    "clean:mobile": "bash scripts/clean-mobile.sh",
+    "clean:mobile:deep": "bash scripts/clean-mobile.sh --deep"
   },
   "dependencies": {
     "@capacitor/app": "^8.1.0",
