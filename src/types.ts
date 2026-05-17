@@ -16,6 +16,13 @@ export interface Saint {
   name: Localized;
   title?: Localized;
   note?: Localized;
+  /**
+   * Set on entries pulled from the extended (lesser-commemorations)
+   * synaxarion at lookup time. The principal saints of the day, hand-curated
+   * in `fixedFeasts.ts`, leave this unset; the UI uses the flag to render
+   * secondary commemorations with reduced visual weight.
+   */
+  secondary?: boolean;
 }
 
 export interface DayEntry {

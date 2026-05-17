@@ -493,6 +493,27 @@
   font-style: italic;
 }
 
+.saint-item--secondary {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  border-left: 2px solid var(--gold-leaf);
+  padding-left: var(--space-2);
+  margin-left: var(--space-2);
+}
+.saint-item--secondary .saint-item__name {
+  font-weight: 500;
+}
+
+.detail__source {
+  margin-top: var(--space-2);
+  font-family: var(--font-accent);
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--ink-soft);
+  opacity: 0.72;
+  text-align: center;
+}
+
 .detail__fast {
   display: flex;
   justify-content: center;

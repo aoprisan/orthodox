@@ -112,7 +112,10 @@ capacitor.config.ts   App ID, name, native shell settings
 - Fasting rules follow the typical Byzantine typikon (Saturday/Sunday
   relaxations during Great Lent, fish on Annunciation & Palm Sunday,
   Bright Week fast-free, etc.).
-- The v1 saints dataset covers all twelve Great Feasts and ~40 widely
-  commemorated saints. Add more by appending to
-  `src/data/fixedFeasts.ts`.
+- The principal saints of each day live in `src/data/fixedFeasts.ts`
+  (bilingual, hand-curated). The lesser commemorations of the extended
+  synaxarion are auto-generated into `src/data/extendedSynaxarion.ts`
+  by `npm run build:synaxarion` (sources: OCA Julian calendar and the
+  PasiSfinti Romanian dataset). The two are merged at lookup time with
+  duplicate detection.
 - Local customs vary — consult your priest for the rule of your parish.
