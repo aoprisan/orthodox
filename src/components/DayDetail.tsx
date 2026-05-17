@@ -74,7 +74,10 @@ export function DayDetail({ date, kind, lang }: Props) {
         ) : (
           <ul className="saint-list">
             {entry.saints.map((s, i) => (
-              <li key={i} className="saint-item dropcap">
+              <li
+                key={i}
+                className={`saint-item${s.secondary ? ' saint-item--secondary' : ' dropcap'}`}
+              >
                 <span className="saint-item__name">{loc(s.name, lang)}</span>
                 {s.title ? <span className="saint-item__title">{loc(s.title, lang)}</span> : null}
                 {s.note ? <span className="saint-item__note">{loc(s.note, lang)}</span> : null}
@@ -82,6 +85,9 @@ export function DayDetail({ date, kind, lang }: Props) {
             ))}
           </ul>
         )}
+        {entry.saints.some((s) => s.secondary) ? (
+          <p className="detail__source">{t('synaxarionSource', lang)}</p>
+        ) : null}
       </div>
     </aside>
   );
