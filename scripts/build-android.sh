@@ -25,7 +25,12 @@ Options:
   --skip-web     Skip the web build + cap sync step (reuse existing dist/).
   -h, --help     Show this help.
 
-Output is copied to build/android/.
+Release builds (--release / --aab) auto-bump the patch version: package.json
+"version" gets bumped (e.g. 0.1.0 -> 0.1.1), and android/app/build.gradle is
+synced (versionName matches, versionCode increments by 1). This keeps Play
+Console uploads from colliding on versionCode.
+
+Output is copied to build/android/ as <package-name>-v<versionName>-<suffix>.
 EOF
 }
 
@@ -46,6 +51,17 @@ if [[ -z "${ANDROID_HOME:-}" && -z "${ANDROID_SDK_ROOT:-}" ]]; then
   echo "warn: neither ANDROID_HOME nor ANDROID_SDK_ROOT is set; Gradle may fail to locate the SDK." >&2
 fi
 
+if [[ "$VARIANT" == "release" ]]; then
+  GRADLE_FILE="$ROOT/android/app/build.gradle"
+  OLD_VERSION="$(node -p "require('$ROOT/package.json').version")"
+  NEW_VERSION="$(npm --prefix "$ROOT" --no-git-tag-version version patch | tail -1 | sed 's/^v//')"
+  OLD_CODE="$(grep -E '^[[:space:]]*versionCode' "$GRADLE_FILE" | sed -E 's/[^0-9]//g' | head -1)"
+  NEW_CODE=$((OLD_CODE + 1))
+  sed -i '' -E "s/versionCode[[:space:]]+[0-9]+/versionCode $NEW_CODE/" "$GRADLE_FILE"
+  sed -i '' -E "s/versionName[[:space:]]+\"[^\"]+\"/versionName \"$NEW_VERSION\"/" "$GRADLE_FILE"
+  echo "==> Version bumped: $OLD_VERSION -> $NEW_VERSION (versionCode $OLD_CODE -> $NEW_CODE)"
+fi
+
 if [[ "$SKIP_WEB" -eq 0 ]]; then
   echo "==> Building web bundle (MOBILE=1)"
   npm run build:mobile
@@ -53,7 +69,12 @@ if [[ "$SKIP_WEB" -eq 0 ]]; then
   npx cap sync android
 fi
 
+APP_NAME="$(node -p "require('$ROOT/package.json').name" 2>/dev/null || echo app)"
+
 cd android
+
+VERSION_NAME="$(grep -E '^[[:space:]]*versionName' app/build.gradle | sed -E 's/.*"([^"]+)".*/\1/' | head -1)"
+[[ -z "$VERSION_NAME" ]] && VERSION_NAME="0"
 
 case "$VARIANT:$FORMAT" in
   debug:apk)
@@ -88,19 +109,24 @@ if [[ ${#artifacts[@]} -eq 0 ]]; then
   exit 1
 fi
 
+renamed=()
 for a in "${artifacts[@]}"; do
-  cp -f "$a" "$OUT_DIR/"
+  base="$(basename "$a")"
+  suffix="${base#app-}"
+  new_name="${APP_NAME}-v${VERSION_NAME}-${suffix}"
+  cp -f "$a" "$OUT_DIR/$new_name"
+  renamed+=("$new_name")
 done
 
 echo
 echo "Build complete. Artifacts:"
-for a in "${artifacts[@]}"; do
-  echo "  build/android/$(basename "$a")"
+for r in "${renamed[@]}"; do
+  echo "  build/android/$r"
 done
 
 if [[ "$VARIANT" == "release" ]]; then
-  for a in "${artifacts[@]}"; do
-    if [[ "$(basename "$a")" == *"-unsigned"* ]]; then
+  for r in "${renamed[@]}"; do
+    if [[ "$r" == *"-unsigned"* ]]; then
       echo
       echo "note: release artifact is unsigned. Configure signing in" >&2
       echo "      android/app/build.gradle to produce an installable build." >&2
