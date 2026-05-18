@@ -44,10 +44,11 @@ function detectInitialLang(): Lang {
 }
 
 export function App() {
-  const initial = parseHash();
-  const [selected, setSelected] = useState<Date>(() =>
-    initial ? new Date(Date.UTC(initial.y, initial.m - 1, initial.d)) : todayUTC(),
-  );
+  // Always start on today. The URL hash is auto-persisted on every `selected`
+  // change, so honouring it on mount would pin the lower panel to whatever
+  // date was last viewed in a previous session — leaving it stale while the
+  // top "Today" panel correctly shows the actual current day.
+  const [selected, setSelected] = useState<Date>(todayUTC);
   const [kind, setKind] = useState<CalendarKind>(() => {
     const stored = localStorage.getItem(KIND_KEY);
     return stored === 'old' ? 'old' : 'new';
