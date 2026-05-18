@@ -10,6 +10,7 @@ build
 .vscode/*
 !.vscode/extensions.json
 tmp
+__pycache__
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
