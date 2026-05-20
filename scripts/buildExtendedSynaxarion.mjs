@@ -4,8 +4,14 @@
 //   • LUMINA / marturisire   (Romanian, principal + others[], 365 days, 2026)
 //   • PasiSfinti 2026        (Romanian, free-text description per day; secondary)
 //
+// NOTE: The Romanian (`ro`) bucket this writes from LUMINA/PasiSfinti is
+// immediately overwritten by scripts/buildSynaxarNames.mjs, which rebuilds it
+// from the authoritative calendar-ortodox.ro commemorations. Always run the
+// two together (npm run build:synaxarion does). This script's lasting output
+// is the English (`en`) OCA bucket.
+//
 // Run:
-//   node scripts/buildExtendedSynaxarion.mjs
+//   node scripts/buildExtendedSynaxarion.mjs && node scripts/buildSynaxarNames.mjs
 //
 // Inputs are pulled from raw.githubusercontent.com and cached under tmp/.
 

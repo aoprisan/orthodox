@@ -3,7 +3,6 @@ import { gregorianToJulian, mmdd, ymdFromDate } from './julian';
 import { fixedFeasts } from '../data/fixedFeasts';
 import { extendedSynaxarion } from '../data/extendedSynaxarion';
 import { moveableFeastsOn } from './moveableFeasts';
-import { looksEnglish } from '../i18n/loc';
 
 /**
  * Given a civil (Gregorian) date and the user's calendar selection, return the
@@ -51,41 +50,44 @@ function extendedSaintsFor(key: string, existing: Saint[]): Saint[] {
   }
   const taken = new Set<string>(principalKeys);
   const out: Saint[] = [];
+  const isMulti = (s: string) => s.includes(' ');
   const tryAdd = (raw: string, makeSaint: () => Saint) => {
-    const k = normalize(raw);
-    if (!k) return;
-    if (taken.has(k)) return;
+    const ks = saintKeys(raw);
+    if (ks.length === 0) return;
+    // Exact match against anything already taken (principal or earlier ext).
+    if (ks.some((k) => taken.has(k))) return;
     // Substring dedup is only safe when both sides are multi-token —
     // single-token keys like "basil" or "john" would wrongly collapse
-    // distinct saints (Basil the Great vs Basil of Ancyra).
-    const isMulti = (s: string) => s.includes(' ');
-    if (isMulti(k) && principalKeys.some((p) => p && isMulti(p) && (p.includes(k) || k.includes(p)))) {
+    // distinct saints (Basil the Great vs Basil of Ancyra). Restrict it to
+    // the curated principal keys; never substring-merge two extended entries
+    // against each other, or a multi-saint commemoration ("Hrisant și Daria")
+    // would swallow its individual members.
+    if (ks.some((k) => isMulti(k) && principalKeys.some((p) => p && isMulti(p) && (p.includes(k) || k.includes(p))))) {
       return;
     }
-    taken.add(k);
+    ks.forEach((k) => taken.add(k));
     out.push(makeSaint());
   };
-  for (const e of ext.en) {
-    // EN bucket carries the OCA English text plus an optional Romanian
-    // rendering produced by the template translator at build time. The
-    // translator is incomplete and often leaves English words behind
-    // ("Sf. Ap. Andronicus din Seventy și său fellow-laborer"); when that
-    // happens, drop the broken Romanian so the entry stores as a plain
-    // English string. The RO-mode filter in DayDetail/TodayCard then hides
-    // it instead of showing pseudo-Romanian to a Romanian reader.
-    const hasUsableRo = e.ro && !looksEnglish(e.ro);
-    tryAdd(e.name, () =>
-      hasUsableRo
-        ? { name: { en: e.name, ro: e.ro! }, secondary: true }
-        : { name: e.name, secondary: true },
-    );
-  }
+  // RO bucket first: native Romanian commemorations (LUMINA / PasiSfinti).
+  // These define the Romanian view, so they must claim their dedup keys before
+  // the English bucket — otherwise an identically-spelled OCA entry ("Saint
+  // Emilia, …") would seize the key, leaving the native "Sf. Emilia" to be
+  // dropped and then hidden from RO readers. Mirror the Romanian text into the
+  // EN slot so English viewers see the Romanian wording rather than nothing —
+  // honest, since we have no proper English translation of these names.
   for (const e of ext.ro) {
-    // RO bucket: native Romanian entries (LUMINA / PasiSfinti). Mirror the
-    // Romanian text into the EN slot so English viewers see the Romanian
-    // wording rather than nothing — this is honest, since we don't have a
-    // proper English translation of these names.
     tryAdd(e.name, () => ({ name: { en: e.name, ro: e.name }, secondary: true }));
+  }
+  // EN bucket: OCA English text. The build-time template translator that once
+  // produced a Romanian rendering for these is too unreliable — it routinely
+  // leaves English words behind ("Sf. Greatmartyr, Victory-bearer", "Sf. Mc.
+  // Abo Perfumer", "Soborul Ecumenical Teachers") and only duplicates the
+  // curated Romanian entries above. So we store these as plain English strings:
+  // English viewers see them, and the RO-mode filter in DayDetail/TodayCard
+  // (which drops untranslated English) hides them from Romanian readers. The
+  // Romanian view is therefore exclusively fixedFeasts.ts + the ext.ro bucket.
+  for (const e of ext.en) {
+    tryAdd(e.name, () => ({ name: e.name, secondary: true }));
   }
   return out;
 }
@@ -93,11 +95,11 @@ function extendedSaintsFor(key: string, existing: Saint[]): Saint[] {
 function collectKeys(keys: string[], value: Saint['name'] | Saint['title']) {
   if (value == null) return;
   if (typeof value === 'string') {
-    keys.push(normalize(value));
+    keys.push(...saintKeys(value));
     return;
   }
-  if (value.en) keys.push(normalize(value.en));
-  if (value.ro) keys.push(normalize(value.ro));
+  if (value.en) keys.push(...saintKeys(value.en));
+  if (value.ro) keys.push(...saintKeys(value.ro));
 }
 
 const DROP_TOKENS = new Set([
@@ -121,27 +123,51 @@ const DROP_TOKENS = new Set([
   'mutarea', 'moastelor', 'moaste', 'chipul', 'icoanei', 'icoana', 'noul',
   'nou', 'noua', 'batran', 'dreptul', 'dreapta', 'dreptii',
   'din', 'de', 'la', 'in', 'si', 'al', 'ale', 'lui', 'pe',
+  // Romanian role abbreviations and variant spellings — so "Sf. Pr. Maleahi"
+  // keys the same as "Sf. Prooroc Maleahi", "Maxim Mărt" as "Maxim
+  // Mărturisitorul", "M. Mc." as "Mare Mucenic", etc.
+  'pr', 'proroc', 'prorocul', 'prorocita', 'prooroaca', 'proorocii',
+  'mucenici', 'mucenicele', 'mart', 'marturisitorul', 'marturisitoarea',
+  'marturisitor', 'marturisitoare', 'm', 'mr', 'arh', 'arhanghel', 'arhangheli',
+  'arhanghelul', 'drept', 'sfintei', 'sfant', 'zi', 'ziua',
+  // Generic honorific epithets that are not part of the proper name.
+  'imparateasa', 'imparatul', 'imparat', 'imp', 'diaconita', 'diaconul',
+  'diacon', 'diac', 'preotul', 'preot', 'tanar', 'tanarul', 'tanara',
 ]);
 
 /**
- * Reduce a saint's name to a comparison key. Lowercase, drop diacritics
- * (including Romanian comma-below ș/ț), strip everything that isn't a
- * letter or space, then remove canonical liturgical noise tokens
- * (Saint, Sf. Cuv., Venerable, Hieromartyr, …). What's left is the
- * proper-name core. Dedup compares both equality and substring overlap so
- * "Anthony the Great" and "Venerable and God-bearing Father Anthony the
- * Great" collapse to the same saint.
+ * Reduce a saint's name to its proper-name core for comparison. Lowercase,
+ * drop diacritics (including Romanian comma-below ș/ț), strip everything that
+ * isn't a letter or space, then remove canonical liturgical noise tokens
+ * (Saint, Sf. Cuv., Venerable, Hieromartyr, …). What's left is the proper-name
+ * core, e.g. "Sf. Cuv. Antonie cel Mare" → "antonie".
  */
-function normalize(s: string): string {
+function normalizeTokens(s: string): string {
   let n = s.toLowerCase();
   // Pre-fold Romanian comma-below diacritics that NFD doesn't separate.
   n = n.replace(/ș/g, 's').replace(/ț/g, 't');
   n = n.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-  // First comma keeps just the head clause ("Saint Basil the Great" vs
-  // "Saint Basil the Great, Archbishop of Caesarea").
-  n = n.split(',')[0];
   // Keep letters and spaces only — dots, dashes, parens, daggers all go.
   n = n.replace(/[^a-z\s]/g, ' ');
   const tokens = n.split(/\s+/).filter((t) => t && !DROP_TOKENS.has(t));
   return tokens.join(' ');
+}
+
+/**
+ * Comparison keys for a saint name. Returns the full normalized key plus —
+ * when the name has a trailing comma clause — the head-clause key. Carrying
+ * both lets "Sf. Ier. Petru al Sevastiei" and "Sf. Ier. Petru, ep. Sevastiei"
+ * collapse on the full key, while "Saint Basil the Great" still collapses with
+ * "Saint Basil the Great, Archbishop of Caesarea" on the head key. Distinct
+ * saints that merely share a first name (Basil the Great vs Basil of Ancyra)
+ * keep their disambiguator in both keys and so stay separate.
+ */
+function saintKeys(s: string): string[] {
+  const full = normalizeTokens(s);
+  const comma = s.indexOf(',');
+  const head = comma === -1 ? full : normalizeTokens(s.slice(0, comma));
+  const keys: string[] = [];
+  if (full) keys.push(full);
+  if (head && head !== full) keys.push(head);
+  return keys;
 }
