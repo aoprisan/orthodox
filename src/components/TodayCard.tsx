@@ -1,7 +1,8 @@
 import type { CalendarKind, Feast, Lang, Saint } from '../types';
 import { entryForDate, highestRank } from '../lib/feasts';
 import { fastFor } from '../lib/fasting';
-import { locale, t, tFastLevel, tFastReason } from '../i18n/strings';
+import { servicesFor } from '../lib/services';
+import { formatServiceTime, locale, t, tFastLevel, tFastReason, tService } from '../i18n/strings';
 import { loc } from '../i18n/loc';
 import { translateName } from '../i18n/names';
 
@@ -26,6 +27,7 @@ function rankWeight(rank: Feast['rank']): number {
 export function TodayCard({ today, kind, lang, onJump }: Props) {
   const entry = entryForDate(today, kind);
   const fast = fastFor(today, kind);
+  const services = servicesFor(today, kind);
   const rank = highestRank(entry.feasts);
   const top = [...entry.feasts].sort((a, b) => rankWeight(b.rank) - rankWeight(a.rank))[0];
 
@@ -79,6 +81,13 @@ export function TodayCard({ today, kind, lang, onJump }: Props) {
             {visibleSaints
               .slice(0, 3)
               .map((s) => loc(s.name, lang))
+              .join(' · ')}
+          </div>
+        ) : null}
+        {services.length > 0 ? (
+          <div className="today-card__services">
+            {services
+              .map((s) => `${formatServiceTime(s.time, lang)} ${tService(s.code, lang)}`)
               .join(' · ')}
           </div>
         ) : null}

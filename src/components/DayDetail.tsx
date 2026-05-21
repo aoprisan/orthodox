@@ -1,8 +1,9 @@
 import type { CalendarKind, Feast, Lang, Saint } from '../types';
 import { entryForDate } from '../lib/feasts';
 import { fastFor } from '../lib/fasting';
+import { servicesFor } from '../lib/services';
 import { gregorianToJulian } from '../lib/julian';
-import { locale, t, tFastLevel, tFastReason, tRank } from '../i18n/strings';
+import { formatServiceTime, locale, t, tFastLevel, tFastReason, tRank, tService } from '../i18n/strings';
 import { loc } from '../i18n/loc';
 import { translateName } from '../i18n/names';
 import { SaintLifeSection } from './SaintLifeSection';
@@ -16,6 +17,7 @@ interface Props {
 export function DayDetail({ date, kind, lang }: Props) {
   const entry = entryForDate(date, kind);
   const fast = fastFor(date, kind);
+  const services = servicesFor(date, kind);
   const julian = gregorianToJulian(
     date.getUTCFullYear(),
     date.getUTCMonth() + 1,
@@ -59,6 +61,25 @@ export function DayDetail({ date, kind, lang }: Props) {
           {tFastLevel(fast.level, lang)}
         </span>
         <span className="detail__fast-reason">{tFastReason(fast.code, lang)}</span>
+      </div>
+
+      <div className="detail__section">
+        <h3 className="detail__section-title">{t('services', lang)}</h3>
+        {services.length === 0 ? (
+          <p className="empty">{t('noService', lang)}</p>
+        ) : (
+          <ul className="service-list">
+            {services.map((s, i) => (
+              <li key={i} className="service-item">
+                <span className="service-item__time">{formatServiceTime(s.time, lang)}</span>
+                <span className="service-item__name">{tService(s.code, lang)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        {services.length > 0 ? (
+          <p className="detail__source">{t('servicesNote', lang)}</p>
+        ) : null}
       </div>
 
       <div className="detail__section">
