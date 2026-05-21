@@ -1,4 +1,4 @@
-import type { FastLevel, FastReasonCode, Feast, Lang } from '../types';
+import type { FastLevel, FastReasonCode, Feast, Lang, ServiceCode } from '../types';
 
 type Dict = Record<string, string>;
 
@@ -17,6 +17,14 @@ const en: Dict = {
   romanian: 'Română',
   feasts: 'Feasts',
   saints: 'Saints',
+  services: 'Services',
+  noService: 'No public service is typically scheduled.',
+  servicesNote: 'Typical times — confirm your parish schedule.',
+  'service.vigil': 'All-Night Vigil',
+  'service.vespers': 'Vespers',
+  'service.orthros': 'Matins (Orthros)',
+  'service.liturgy': 'Divine Liturgy',
+  'service.presanctified': 'Presanctified Liturgy',
   noFeast: 'No feast commemorated.',
   noSaints: 'Synaxarion not loaded for this day.',
   synaxarionSource: 'Lesser commemorations from the extended synaxarion (OCA · calendar-ortodox.ro).',
@@ -105,6 +113,14 @@ const ro: Dict = {
   romanian: 'Română',
   feasts: 'Sărbători',
   saints: 'Sfinți',
+  services: 'Slujbe',
+  noService: 'De regulă nu se oficiază slujbă.',
+  servicesNote: 'Ore orientative — verificați programul parohiei.',
+  'service.vigil': 'Priveghere',
+  'service.vespers': 'Vecernie',
+  'service.orthros': 'Utrenie',
+  'service.liturgy': 'Sfânta Liturghie',
+  'service.presanctified': 'Liturghia Darurilor mai înainte sfințite',
   noFeast: 'Nu este sărbătoare astăzi.',
   noSaints: 'Sinaxarul nu este încărcat pentru această zi.',
   synaxarionSource: 'Pomeniri din sinaxar, după calendar-ortodox.ro.',
@@ -194,6 +210,20 @@ export function tFastReason(code: FastReasonCode, lang: Lang): string {
 
 export function tRank(rank: Feast['rank'], lang: Lang): string {
   return t(`rank.${rank}`, lang);
+}
+
+export function tService(code: ServiceCode, lang: Lang): string {
+  return t(`service.${code}`, lang);
+}
+
+export function formatServiceTime(hhmm: string, lang: Lang): string {
+  const [h, m] = hhmm.split(':').map(Number);
+  return new Intl.DateTimeFormat(locale(lang), {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: lang === 'en',
+    timeZone: 'UTC',
+  }).format(new Date(Date.UTC(2000, 0, 1, h, m)));
 }
 
 export function locale(lang: Lang): string {

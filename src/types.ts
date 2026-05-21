@@ -30,6 +30,19 @@ export interface DayEntry {
   saints: Saint[];
 }
 
+export type ServiceCode =
+  | 'vigil'
+  | 'vespers'
+  | 'orthros'
+  | 'liturgy'
+  | 'presanctified';
+
+export interface ServiceTime {
+  code: ServiceCode;
+  /** Local clock time as "HH:MM" (24h); formatted for the active locale at render. */
+  time: string;
+}
+
 /**
  * One saint or feast section within a day's hagiographic reading. Title is
  * the commemoration line (e.g., "Tot în această zi, pomenirea ..."), and
