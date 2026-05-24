@@ -2,6 +2,7 @@ import type { CalendarKind, DayEntry, Feast, Saint } from '../types';
 import { gregorianToJulian, mmdd, ymdFromDate } from './julian';
 import { fixedFeasts } from '../data/fixedFeasts';
 import { extendedSynaxarion } from '../data/extendedSynaxarion';
+import { romanianSaints } from '../data/romanianSaints';
 import { moveableFeastsOn } from './moveableFeasts';
 
 /**
@@ -25,7 +26,10 @@ export function entryForDate(date: Date, kind: CalendarKind): DayEntry {
   const fixed = fixedFeasts[key] ?? { feasts: [], saints: [] };
   const moveable = moveableFeastsOn(date);
   const feasts: Feast[] = [...moveable, ...fixed.feasts];
-  const saints: Saint[] = [...fixed.saints, ...extendedSaintsFor(key, fixed.saints)];
+  // Curated principal saints = fixedFeasts + the Romanian-saints supplement
+  // (Doxologia). Both claim dedup keys before the extended synaxarion is merged.
+  const principal: Saint[] = [...fixed.saints, ...(romanianSaints[key] ?? [])];
+  const saints: Saint[] = [...principal, ...extendedSaintsFor(key, principal)];
   return { feasts, saints };
 }
 
