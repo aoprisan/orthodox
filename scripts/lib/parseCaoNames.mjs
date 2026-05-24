@@ -37,6 +37,12 @@ const CLOSING = /^\s*cu\s+ale\b.{0,80}?\brugaciuni\b/;
 // prose, not a commemoration — drop it rather than print "Pomenirea care …".
 const CLAUSE_START = /^(care|caruia|careia|carora|cel\s+ce|cei\s+ce|cea\s+ce|ceea|fiind|dupa\s+ce|in\s+anul|s-a\b|s-au\b|si\s+care|iar\b|insa\b|asadar)/;
 
+// A sentence-ending period, but NOT the century abbreviation "sec." which
+// sits inside the name itself ("(sec. V)", "(sec. al IV-lea)", "(sec. V-VI)").
+// Without this guard, "Sf. Vincentiu de Lerins (sec. V)." would be cut at
+// "(sec", and likewise for David cel din Tesalonic, Petru și Fevronia, etc.
+const SENTENCE_END = /(?<!\bsec)\.(\s|$)/;
+
 // Bio-clause markers — cut the name here.
 const BIO = [
   /\bcare\b/, /\bsi\s+care\b/, /\bdespre\s+care\b/, /\bc[a]ruia\b/, /\bc[a]reia\b/, /\bc[a]rora\b/,
@@ -148,7 +154,7 @@ function afterLeadVerb(s) {
 function cutBio(orig) {
   const f = fold(orig);
   let cut = orig.length;
-  const dot = f.search(/\.(\s|$)/);
+  const dot = f.search(SENTENCE_END);
   if (dot !== -1) cut = Math.min(cut, dot);
   for (const re of BIO) {
     const m = re.exec(f);
@@ -257,7 +263,7 @@ export function titleToName(title) {
   // The commemoration sentence (after the date preamble, up to the first
   // sentence break) — keeps the lead verb and any descriptive clause.
   const afterDate = stripDateOnly(title);
-  const sentence = afterDate.split(/\.(\s|$)/)[0].trim();
+  const sentence = afterDate.split(SENTENCE_END)[0].trim();
   if (fold(sentence).length < 3) return null;
   // Great Feasts / feast-cycle days belong in fixedFeasts[].feasts, not here.
   if (FEAST_WORDS.test(fold(sentence))) return null;
