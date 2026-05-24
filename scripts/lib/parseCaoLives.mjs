@@ -124,10 +124,17 @@ export function parseDay(html, sourceUrl) {
 
     const bodyHtml = html.slice(head.end, nextStart);
     const paragraphs = [];
-    const paraRe = /<p\b[^>]*>([\s\S]*?)<\/p>/gi;
-    let pm;
-    while ((pm = paraRe.exec(bodyHtml)) !== null) {
-      const text = cleanText(pm[1]);
+    // Some pages leave the final <P> of a section unclosed before the next
+    // section head (e.g. mai24, noiembrie04), so a strict <p>...</p> match
+    // silently drops that paragraph. Split on opening <p> tags instead: each
+    // chunk runs until its own </p> if present, otherwise until the next
+    // opening <p> (the split boundary) or the section body's end.
+    const chunks = bodyHtml.split(/<p\b[^>]*>/i);
+    for (let k = 1; k < chunks.length; k++) {
+      let chunk = chunks[k];
+      const close = chunk.search(/<\/p>/i);
+      if (close !== -1) chunk = chunk.slice(0, close);
+      const text = cleanText(chunk);
       if (text.length >= 5) paragraphs.push(text);
     }
 
