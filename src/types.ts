@@ -10,6 +10,14 @@ export interface Feast {
   name: Localized;
   rank: FeastRank;
   note?: Localized;
+  /**
+   * A short, hand-authored explainer of what the celebration commemorates
+   * (a few sentences). Set only on the principal feasts — the Twelve Great
+   * Feasts and the great moveable feasts (Pascha, Palm Sunday, Ascension,
+   * Pentecost). Rendered as a collapsible "About this feast" note in the day
+   * panel; absent on the rank-and-file commemorations.
+   */
+  about?: Localized;
 }
 
 export interface Saint {

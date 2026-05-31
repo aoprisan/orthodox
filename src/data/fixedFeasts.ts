@@ -48,7 +48,7 @@ export const fixedFeasts: Record<string, DayEntry> = {
     ],
   },
   [mmdd(1, 6)]: {
-    feasts: [{ name: { en: 'Theophany — Holy Baptism of the Lord', ro: 'Botezul Domnului — Boboteaza' }, rank: 'great' }],
+    feasts: [{ name: { en: 'Theophany — Holy Baptism of the Lord', ro: 'Botezul Domnului — Boboteaza' }, rank: 'great', about: { en: 'Christ is baptized by John the Forerunner in the river Jordan, and the Holy Trinity is made manifest: the Father’s voice from heaven, the Son in the water, and the Spirit descending as a dove. On this day the Church blesses the waters in remembrance of the sanctifying of all creation.', ro: 'Hristos este botezat de Ioan Înaintemergătorul în râul Iordan, iar Sfânta Treime Se descoperă: glasul Tatălui din cer, Fiul în apă și Duhul pogorându-Se ca un porumbel. În această zi Biserica sfințește apele, spre pomenirea sfințirii întregii făpturi.' } }],
     saints: [],
   },
   [mmdd(1, 7)]: {
@@ -209,7 +209,7 @@ export const fixedFeasts: Record<string, DayEntry> = {
     saints: [{ name: { en: 'St. Tryphon the Martyr', ro: 'Sf. Mc. Trifon' } }],
   },
   [mmdd(2, 2)]: {
-    feasts: [{ name: { en: 'Meeting of Our Lord in the Temple', ro: 'Întâmpinarea Domnului' }, rank: 'great' }],
+    feasts: [{ name: { en: 'Meeting of Our Lord in the Temple', ro: 'Întâmpinarea Domnului' }, rank: 'great', about: { en: 'Forty days after His birth, the infant Christ is brought to the Temple, where the righteous elder Symeon receives Him in his arms and the prophetess Anna gives thanks. Symeon’s words, "Now lettest Thou Thy servant depart in peace," greet the Lord as the Light of revelation to the nations.', ro: 'La patruzeci de zile de la naștere, Pruncul Hristos este adus la Templu, unde dreptul bătrân Simeon Îl primește în brațe, iar proorocița Ana mulțumește lui Dumnezeu. Cuvintele lui Simeon, „Acum slobozește pe robul Tău, Stăpâne", întâmpină pe Domnul ca Lumină spre descoperirea neamurilor.' } }],
     saints: [],
   },
   [mmdd(2, 3)]: {
@@ -468,7 +468,7 @@ export const fixedFeasts: Record<string, DayEntry> = {
     saints: [{ name: { en: 'St. Zacharias the Hermit', ro: 'Sf. Cuv. Zaharia' } }],
   },
   [mmdd(3, 25)]: {
-    feasts: [{ name: { en: 'Annunciation to the Most Holy Theotokos', ro: 'Buna Vestire' }, rank: 'great' }],
+    feasts: [{ name: { en: 'Annunciation to the Most Holy Theotokos', ro: 'Buna Vestire' }, rank: 'great', about: { en: 'The Archangel Gabriel is sent to Nazareth to announce to the Virgin Mary that she will conceive and bear the Son of God. By her humble answer, "Behold the handmaid of the Lord; be it unto me according to thy word," the Word becomes flesh and our salvation begins.', ro: 'Arhanghelul Gavriil este trimis în Nazaret ca să vestească Fecioarei Maria că va zămisli și va naște pe Fiul lui Dumnezeu. Prin răspunsul ei smerit, „Iată roaba Domnului, fie mie după cuvântul tău", Cuvântul Se face trup și începe mântuirea noastră.' } }],
     saints: [],
   },
   [mmdd(3, 26)]: {
@@ -1124,7 +1124,7 @@ export const fixedFeasts: Record<string, DayEntry> = {
     saints: [{ name: { en: 'St. Eusignius the Martyr', ro: 'Sf. Mc. Evsignie' } }],
   },
   [mmdd(8, 6)]: {
-    feasts: [{ name: { en: 'Holy Transfiguration of Our Lord, God, and Savior Jesus Christ', ro: 'Schimbarea la Față a Domnului' }, rank: 'great' }],
+    feasts: [{ name: { en: 'Holy Transfiguration of Our Lord, God, and Savior Jesus Christ', ro: 'Schimbarea la Față a Domnului' }, rank: 'great', about: { en: 'On Mount Tabor Christ is transfigured before Peter, James, and John, His face shining like the sun and His garments white as light, while Moses and Elijah speak with Him. The Father’s voice declares, "This is My beloved Son," revealing the uncreated glory of the Godhead before the Passion.', ro: 'Pe Muntele Taborului Hristos Se schimbă la față înaintea lui Petru, Iacov și Ioan, fața Sa strălucind ca soarele și veșmintele albe ca lumina, în timp ce Moise și Ilie vorbesc cu El. Glasul Tatălui mărturisește: „Acesta este Fiul Meu cel iubit", descoperind slava cea necreată a Dumnezeirii înainte de Patimă.' } }],
     saints: [],
   },
   [mmdd(8, 7)]: {
@@ -1160,7 +1160,7 @@ export const fixedFeasts: Record<string, DayEntry> = {
     saints: [{ name: { en: 'Holy Prophet Micah', ro: 'Sf. Prooroc Miheia' } }],
   },
   [mmdd(8, 15)]: {
-    feasts: [{ name: { en: 'Dormition of Our Most Holy Lady the Theotokos and Ever-Virgin Mary', ro: 'Adormirea Maicii Domnului' }, rank: 'great' }],
+    feasts: [{ name: { en: 'Dormition of Our Most Holy Lady the Theotokos and Ever-Virgin Mary', ro: 'Adormirea Maicii Domnului' }, rank: 'great', about: { en: 'The Most Holy Theotokos falls asleep in the Lord, surrounded by the apostles whom God gathered miraculously from afar. Her Son receives her soul into His hands, and the Church confesses that she was translated to heaven, remaining a mother and intercessor for the faithful. It is crowned by a strict fast from August 1 to 14.', ro: 'Preasfânta Născătoare de Dumnezeu adoarme întru Domnul, înconjurată de apostolii pe care Dumnezeu i-a adunat în chip minunat din depărtări. Fiul ei îi primește sufletul în mâinile Sale, iar Biserica mărturisește mutarea ei la cer, rămânând maică și mijlocitoare pentru credincioși. Praznicul este pregătit prin postul Adormirii, de la 1 la 14 august.' } }],
     saints: [],
   },
   [mmdd(8, 16)]: {
@@ -1277,7 +1277,7 @@ export const fixedFeasts: Record<string, DayEntry> = {
     saints: [{ name: { en: 'St. Sozon the Martyr', ro: 'Sf. Mc. Sozont' } }],
   },
   [mmdd(9, 8)]: {
-    feasts: [{ name: { en: 'Nativity of Our Most Holy Lady the Theotokos', ro: 'Nașterea Maicii Domnului' }, rank: 'great' }],
+    feasts: [{ name: { en: 'Nativity of Our Most Holy Lady the Theotokos', ro: 'Nașterea Maicii Domnului' }, rank: 'great', about: { en: 'The Virgin Mary is born to the aged and childless Joachim and Anna, whose long prayer is answered by God. As the first great feast of the Church year, it marks the dawn of salvation: she who would become the living temple of the Word enters the world.', ro: 'Fecioara Maria se naște din bătrânii și până atunci neroditorii Ioachim și Ana, a căror îndelungată rugăciune este ascultată de Dumnezeu. Fiind cel dintâi praznic mare al anului bisericesc, el vestește zorii mântuirii: vine în lume ceea ce avea să fie templul cel viu al Cuvântului.' } }],
     saints: [],
   },
   [mmdd(9, 9)]: {
@@ -1304,7 +1304,7 @@ export const fixedFeasts: Record<string, DayEntry> = {
     saints: [{ name: { en: 'St. Cornelius the Centurion, Hieromartyr', ro: 'Sf. sfințit Mc. Cornelie Sutașul' } }],
   },
   [mmdd(9, 14)]: {
-    feasts: [{ name: { en: 'Universal Exaltation of the Precious and Life-Giving Cross', ro: 'Înălțarea Sfintei Cruci' }, rank: 'great' }],
+    feasts: [{ name: { en: 'Universal Exaltation of the Precious and Life-Giving Cross', ro: 'Înălțarea Sfintei Cruci' }, rank: 'great', about: { en: 'The Church commemorates the finding of the True Cross by St. Helena in Jerusalem and its solemn lifting up before the people, so that all might venerate the instrument of our salvation. In honour of the Lord’s suffering, the feast is kept with a strict fast.', ro: 'Biserica prăznuiește aflarea Cinstitei Cruci de către Sfânta Elena la Ierusalim și înălțarea ei solemnă înaintea poporului, ca toți să se închine uneltei mântuirii noastre. În cinstea pătimirii Domnului, praznicul se ține cu post aspru.' } }],
     saints: [],
   },
   [mmdd(9, 15)]: {
@@ -1655,7 +1655,7 @@ export const fixedFeasts: Record<string, DayEntry> = {
     ],
   },
   [mmdd(11, 21)]: {
-    feasts: [{ name: { en: 'Entry of the Most Holy Theotokos into the Temple', ro: 'Intrarea în Biserică a Maicii Domnului' }, rank: 'great' }],
+    feasts: [{ name: { en: 'Entry of the Most Holy Theotokos into the Temple', ro: 'Intrarea în Biserică a Maicii Domnului' }, rank: 'great', about: { en: 'At three years of age the Virgin Mary is brought by Joachim and Anna to the Temple to be dedicated to God, and she is led even into the Holy of Holies, where she is nourished for her future role. The feast prepares the faithful for the Nativity and opens the singing of Christmas hymns.', ro: 'La vârsta de trei ani, Fecioara Maria este adusă de Ioachim și Ana la Templu spre a fi închinată lui Dumnezeu și este dusă până în Sfânta Sfintelor, unde este hrănită pentru chemarea ei cea viitoare. Praznicul îi pregătește pe credincioși pentru Nașterea Domnului și deschide cântarea colindelor.' } }],
     saints: [],
   },
   [mmdd(11, 22)]: {
@@ -1830,7 +1830,7 @@ export const fixedFeasts: Record<string, DayEntry> = {
     saints: [{ name: { en: 'St. Eugenia, Venerable Martyr', ro: 'Sf. Cuv. Muceniță Eugenia' } }],
   },
   [mmdd(12, 25)]: {
-    feasts: [{ name: { en: 'Nativity According to the Flesh of Our Lord, God, and Savior Jesus Christ', ro: 'Nașterea Domnului' }, rank: 'great' }],
+    feasts: [{ name: { en: 'Nativity According to the Flesh of Our Lord, God, and Savior Jesus Christ', ro: 'Nașterea Domnului' }, rank: 'great', about: { en: 'The Son of God is born of the Virgin Mary in a cave at Bethlehem and laid in a manger, the eternal Word taking on our flesh. Shepherds hear the angels’ hymn and Magi come from the East to worship Him, so that heaven and earth rejoice together at God made man.', ro: 'Fiul lui Dumnezeu Se naște din Fecioara Maria într-o peșteră din Betleem și este pus în iesle, Cuvântul cel veșnic luând trupul nostru. Păstorii aud cântarea îngerilor, iar magii vin de la Răsărit ca să I se închine, încât cerul și pământul se bucură împreună de Dumnezeu făcut om.' } }],
     saints: [],
   },
   [mmdd(12, 26)]: {
