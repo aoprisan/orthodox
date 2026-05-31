@@ -736,6 +736,38 @@
 }
 .feast-item__note { font-style: italic; }
 
+.feast-item__about {
+  margin-top: var(--space-2);
+}
+.feast-item__about > summary {
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  user-select: none;
+}
+.feast-item[data-rank='great'] .feast-item__about > summary {
+  color: var(--porphyry);
+}
+.feast-item__about > summary::-webkit-details-marker { display: none; }
+.feast-item__about > summary::before {
+  content: '✚ ';
+  opacity: 0.7;
+}
+.feast-item__about[open] > summary::before { content: '— '; }
+.feast-item__about > p {
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
 .saint-item--secondary {
   font-size: 0.95rem;
   color: var(--ink-soft);

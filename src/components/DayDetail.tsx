@@ -94,6 +94,12 @@ export function DayDetail({ date, kind, lang }: Props) {
                 <span className="feast-mark" aria-hidden="true">✚ </span>
                 {loc(f.name, lang)}
                 {f.note ? <span className="feast-item__note">{loc(f.note, lang)}</span> : null}
+                {f.about ? (
+                  <details className="feast-item__about">
+                    <summary>{t('aboutFeast', lang)}</summary>
+                    <p>{loc(f.about, lang)}</p>
+                  </details>
+                ) : null}
               </li>
             ))}
           </ul>
